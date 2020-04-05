@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace UtilityExtensions.Classes
+namespace CSharpUtilityExtensions
 {
     public struct Timer
     {

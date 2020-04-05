@@ -1,6 +1,6 @@
 ﻿using System;
-using UtilityExtensions.Extensions;
-namespace UtilityExtensions.Classes
+using CSharpUtilityExtensions.Extensions;
+namespace CSharpUtilityExtensions.Geometry.Classes
 {
     public struct Angle
     {
@@ -18,7 +18,7 @@ namespace UtilityExtensions.Classes
 
         public double Value
         {
-            get => ClampAngle(value); set => this.value = ClampAngle(value);
+            get => ClampAngle(value); private set => this.value = ClampAngle(value);
         }
         public double Rad
         {
@@ -50,20 +50,10 @@ namespace UtilityExtensions.Classes
 
         public static double ClampAngle(double angle)
         {
-            if (angle > 360)
-            {
+            angle = angle % 360;
 
-                while (angle > 360)
-                    angle -= 360;
-
-            }
             if (angle < 0)
-            {
-
-                while (angle < 0)
-                    angle += 360;
-
-            }
+                angle += 360;
 
             return angle;
         }

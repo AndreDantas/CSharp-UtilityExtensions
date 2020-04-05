@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace UtilityExtensions.Classes
+namespace CSharpUtilityExtensions
 {
     public class Map : Dictionary<string, dynamic>
     {
-
+        
     }
 }

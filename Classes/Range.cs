@@ -1,7 +1,7 @@
 ﻿
 using System;
 
-namespace UtilityExtensions.Classes
+namespace CSharpUtilityExtensions
 {
     public struct Range
     {
@@ -17,8 +17,9 @@ namespace UtilityExtensions.Classes
         public Range(double min, double value, double max) : this()
         {
             this.min = min;
-            this.value = value;
             this.max = max;
+            this.value = value;
+            
         }
 
         public Range(double min, double max) : this()

@@ -1,30 +1,25 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 
-namespace UtilityExtensions.Extensions
+namespace CSharpUtilityExtensions.Extensions
 {
     public static class StringExtensions
     {
         /// <summary>
         /// If the value is higher than 1, returns a new string with the suffix.
         /// </summary>
-        /// <param name="s"></param>
-        /// <param name="condition"></param>
-        /// <param name="suffix"></param>
-        /// <returns></returns>
-        public static string Plural(this string s, int value, string suffix = "s")
+        public static string Plural(this string str, int value, string suffix = "s")
         {
             if (value > 1)
-                return s += suffix;
+                return str += suffix;
 
-            return s;
+            return str;
         }
 
         /// <summary>
         /// Returns a new String with its characters shuflled.
-        /// </summary>
-        /// <param name="str"></param>
-        /// <returns></returns>
+        /// </summary> 
         public static string Shuffle(this string str)
         {
 
@@ -42,44 +37,150 @@ namespace UtilityExtensions.Extensions
             return new string(array);
         }
 
-        public static string RemoveLineEndings(this string value)
+        public static string RemoveLineEndings(this string str)
         {
-            if (String.IsNullOrEmpty(value))
+            if (String.IsNullOrEmpty(str))
             {
-                return value;
+                return str;
             }
             string lineSeparator = ((char)0x2028).ToString();
             string paragraphSeparator = ((char)0x2029).ToString();
 
-            return value.Replace("\r\n", string.Empty)
+            return str.Replace("\r\n", string.Empty)
                         .Replace("\n", string.Empty)
                         .Replace("\r", string.Empty)
                         .Replace(lineSeparator, string.Empty)
                         .Replace(paragraphSeparator, string.Empty)
                         .RemoveZeroWidthSpace();
         }
-
-        public static bool ContainsIgnoreCase(this List<string> l, string s)
+ 
+        public static bool ContainsIgnoreCase(this List<string> l, string check)
         {
             if (l == null)
                 return false;
             for (int i = 0; i < l.Count; i++)
             {
-                if (l[i].ToLower().Trim().RemoveZeroWidthSpace() == s.ToLower().Trim().RemoveZeroWidthSpace())
+                if (l[i].ToLower().Trim().RemoveZeroWidthSpace() == check.ToLower().Trim().RemoveZeroWidthSpace())
                     return true;
             }
 
             return false;
         }
 
-        public static string RemoveZeroWidthSpace(this string value)
+        public static string RemoveZeroWidthSpace(this string str)
         {
-            if (String.IsNullOrEmpty(value))
+            if (String.IsNullOrEmpty(str))
             {
-                return value;
+                return str;
             }
 
-            return value.Replace("\u200B", "");
+            return str.Replace("\u200B", "");
         }
+
+        /// <summary>
+        /// Try to safely convert this string to a DateTime.
+        /// </summary>
+        /// <param name="def">The default value.</param>
+
+        public static DateTime DateTimeParse(this string str, DateTime def = default(DateTime), IFormatProvider format = null, DateTimeStyles style = DateTimeStyles.None)
+        {
+            if (format == null)
+                format = CultureInfo.InvariantCulture;
+            DateTime temp;
+            if (DateTime.TryParse(str, format, style, out temp))
+                return temp;
+            else
+                return def;
+        }
+        /// <summary>
+        /// Try to safely convert this string to a TimeSpan.
+        /// </summary>
+        /// <param name="def">The default value.</param>
+
+        public static TimeSpan TimeSpanParse(this string str, TimeSpan def = default(TimeSpan), IFormatProvider format = null)
+        {
+            if (format == null)
+                format = CultureInfo.InvariantCulture;
+            TimeSpan temp;
+            if (TimeSpan.TryParse(str, format, out temp))
+                return temp;
+            else
+                return def;
+        }
+
+
+        /// <summary>
+        /// Try to safely convert this string to a int.
+        /// </summary>
+        /// <param name="def">The default value.</param>
+        public static int IntParse(this string str, int def = default(int), IFormatProvider format = null, NumberStyles style = NumberStyles.Any)
+        {
+            if (format == null)
+                format = CultureInfo.InvariantCulture;
+            int temp;
+            if (int.TryParse(str, style, format, out temp))
+                return temp;
+            else
+                return def;
+        }
+        /// <summary>
+        /// Try to safely convert this string to a double.
+        /// </summary>
+        /// <param name="def">The default value.</param>
+
+        public static double DoubleParse(this string str, double def = default(double), IFormatProvider format = null, NumberStyles style = NumberStyles.Any)
+        {
+            if (format == null)
+                format = CultureInfo.InvariantCulture;
+            double temp;
+            if (double.TryParse(str, style, format, out temp))
+                return temp;
+            else
+                return def;
+        }
+        /// <summary>
+        /// Try to safely convert this string to a float.
+        /// </summary>
+        /// <param name="def">The default value.</param>
+
+        public static float FloatParse(this string str, float def = default(float), IFormatProvider format = null, NumberStyles style = NumberStyles.Any)
+        {
+            if (format == null)
+                format = CultureInfo.InvariantCulture;
+            float temp;
+            if (float.TryParse(str, style, format, out temp))
+                return temp;
+            else
+                return def;
+        }
+        /// <summary>
+        /// Try to safely convert this string to a decimal.
+        /// </summary>
+        /// <param name="def">The default value.</param>
+
+        public static decimal DecimalParse(this string str, decimal def = default(decimal), IFormatProvider format = null, NumberStyles style = NumberStyles.Any)
+        {
+            if (format == null)
+                format = CultureInfo.InvariantCulture;
+            decimal temp;
+            if (decimal.TryParse(str, style, format, out temp))
+                return temp;
+            else
+                return def;
+        }
+        /// <summary>
+        /// Try to safely convert this string to a bool.
+        /// </summary>
+        /// <param name="def">The default value.</param>
+
+        public static bool BoolParse(this string str, bool def = default(bool))
+        {
+            bool temp;
+            if (bool.TryParse(str, out temp))
+                return temp;
+            else
+                return def;
+        }
+
     }
 }

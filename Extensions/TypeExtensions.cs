@@ -2,7 +2,7 @@
 using System;
 using System.Linq;
 
-namespace UtilityExtensions.Extensions
+namespace CSharpUtilityExtensions.Extensions
 {
     public static class TypeExtensions
 {

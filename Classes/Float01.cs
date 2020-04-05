@@ -2,7 +2,7 @@
 
 using System;
 using System.Collections.Generic;
-namespace UtilityExtensions.Classes
+namespace CSharpUtilityExtensions
 {
     public struct Float01
     {
@@ -45,7 +45,7 @@ namespace UtilityExtensions.Classes
         public static bool operator <=(Float01 f1, Float01 f2) => f1.Value <= f2.Value;
         public static bool operator true(Float01 f1) => f1.Value <= 1 && f1.Value > 0;
         public static bool operator false(Float01 f1) => f1.Value == 0;
-
+        
         public float Value { get => value; set => this.value = Math.Max(Math.Min(value, 1f), 0f); }
 
         public override bool Equals(object obj)

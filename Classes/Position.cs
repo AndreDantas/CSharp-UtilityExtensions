@@ -1,9 +1,9 @@
 ﻿
 using System;
 using System.Collections.Generic;
-namespace UtilityExtensions.Classes
+namespace CSharpUtilityExtensions
 {
-    public class Position : System.Object
+    public struct Position
     {
 
         private int _x;
@@ -12,17 +12,28 @@ namespace UtilityExtensions.Classes
         public int y { get => _y; set => _y = value; }
         public Position(int x, int y)
         {
+            _x = 0;
+            _y = 0;
             this.x = x;
             this.y = y;
         }
 
         public Position(Position oldPos)
         {
+            _x = 0;
+            _y = 0;
+
             if (oldPos == null)
                 return;
+
             x = oldPos.x;
             y = oldPos.y;
         }
+
+        public static readonly Position Up = new Position(0, 1);
+        public static readonly Position Down = new Position(0, -1);
+        public static readonly Position Left = new Position(-1, 0);
+        public static readonly Position Right = new Position(1, 0);
 
         public static bool operator ==(Position a, Position b)
         {
@@ -61,36 +72,19 @@ namespace UtilityExtensions.Classes
 
             return new Position(a.x - b.x, a.y - b.y);
         }
-        public override bool Equals(System.Object obj)
-        {
-            // If parameter is null return false.
-            if (obj == null)
-            {
-                return false;
-            }
 
-            // If parameter cannot be cast to Point return false.
-            Position p = obj as Position;
-            if ((System.Object)p == null)
-            {
-                return false;
-            }
-
-
-            // Return true if the fields match:
-            return (x == p.x) && (y == p.y);
-        }
-
-        public bool Equals(Position p)
+        public override bool Equals(Object obj)
         {
             // If parameter is null return false:
-            if ((object)p == null)
+            if ((object)obj == null || !(obj is Position))
             {
                 return false;
             }
 
+            Position temp = (Position)obj;
+
             // Return true if the fields match:
-            return (x == p.x) && (y == p.y);
+            return (x == temp.x) && (y == temp.y);
         }
 
         public override string ToString()
@@ -105,12 +99,5 @@ namespace UtilityExtensions.Classes
             hashCode = hashCode * -1521134295 + y.GetHashCode();
             return hashCode;
         }
-
-        public static readonly Position Up = new Position(0, 1);
-        public static readonly Position Down = new Position(0, -1);
-        public static readonly Position Left = new Position(-1, 0);
-        public static readonly Position Right = new Position(1, 0);
-
-
     }
 }

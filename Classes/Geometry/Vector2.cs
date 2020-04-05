@@ -1,8 +1,8 @@
 using System;
 
-namespace UtilityExtensions.Classes
+namespace CSharpUtilityExtensions.Geometry.Classes
 {
-    public class Vector2
+    public struct Vector2
     {
         double _x;
 
@@ -13,13 +13,10 @@ namespace UtilityExtensions.Classes
 
         public Vector2(double x, double y)
         {
+            _x = 0;
+            _y = 0;
             this.x = x;
             this.y = y;
-        }
-
-        public Vector2() : this(0, 0)
-        {
-
         }
 
         public static Vector2 zero => new Vector2();
@@ -27,25 +24,6 @@ namespace UtilityExtensions.Classes
         public static Vector2 down => new Vector2(0, -1);
         public static Vector2 left => new Vector2(-1, 0);
         public static Vector2 right => new Vector2(1, 0);
-
-        public override bool Equals(object obj)
-        {
-            return base.Equals(obj);
-        }
-
-
-        public override string ToString()
-        {
-            return string.Format("({0},{1})", x, y);
-        }
-
-        public override int GetHashCode()
-        {
-            int hashCode = -1359342342;
-            hashCode = hashCode * -1521134295 + x.GetHashCode();
-            hashCode = hashCode * -1521134295 + y.GetHashCode();
-            return hashCode;
-        }
 
         // <summary>
         /// Rotates one Vector2 around another
@@ -79,6 +57,26 @@ namespace UtilityExtensions.Classes
 
 
             return new Vector2(newX + centerPoint.x, newY + centerPoint.y);
+        }
+
+        public override string ToString()
+        {
+            return string.Format("({0},{1})", x, y);
+        }
+
+        public override int GetHashCode()
+        {
+            int hashCode = -1359342342;
+            hashCode = hashCode * -1521134295 + x.GetHashCode();
+            hashCode = hashCode * -1521134295 + y.GetHashCode();
+            return hashCode;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is Vector2 vector &&
+                   x == vector.x &&
+                   y == vector.y;
         }
     }
 }

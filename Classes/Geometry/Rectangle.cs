@@ -1,15 +1,19 @@
-﻿namespace UtilityExtensions.Classes
+﻿
+using System;
+
+namespace CSharpUtilityExtensions.Geometry.Classes
 {
-    public struct Rectangle
+    public class Rectangle : Shape2D
     {
 
-        private float width;
-        private float height;
+        private double width;
+        private double height;
         private Angle rotation;
         private Vector2 center;
 
-        public float Height { get => height; set => height = value; }
-        public float Width { get => width; set => width = value; }
+        public override double Area => Math.Abs(width * height);
+        public double Height { get => height; set => height = value; }
+        public double Width { get => width; set => width = value; }
         public Angle Rotation { get => rotation; set => rotation = value; }
         public Vector2 Center { get => center; set => center = value; }
 
@@ -25,7 +29,12 @@
         private Vector2 bottomRightRaw { get => new Vector2(Center.x + Width / 2f, Center.y - Height / 2f); }
         public Vector2 BottomRight { get => Vector2.RotateVector(bottomRightRaw, Center, Rotation); }
 
-        public Rectangle(float height, float width, Angle rotation, Vector2 center) : this()
+        public Rectangle()
+        {
+            
+        }
+
+        public Rectangle(double height, double width, Angle rotation, Vector2 center) : this()
         {
             Height = height;
             Width = width;
@@ -33,12 +42,12 @@
             Center = center;
         }
 
-        public Rectangle(float height, float width, Angle rotation) : this(height, width)
+        public Rectangle(double height, double width, Angle rotation) : this(height, width)
         {
             Rotation = rotation;
         }
 
-        public Rectangle(float height, float width) : this()
+        public Rectangle(double height, double width) : this()
         {
             Height = height;
             Width = width;

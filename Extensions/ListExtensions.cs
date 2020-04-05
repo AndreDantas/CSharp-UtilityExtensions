@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace UtilityExtensions.Extensions
+namespace CSharpUtilityExtensions.Extensions
 {
     public static class ListExtensions
     {

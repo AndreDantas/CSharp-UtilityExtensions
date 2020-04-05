@@ -2,7 +2,7 @@
 
 using System;
 
-namespace UtilityExtensions.Extensions
+namespace CSharpUtilityExtensions.Extensions
 {
     public static class MathExtensions
     {
@@ -56,7 +56,6 @@ namespace UtilityExtensions.Extensions
         {
             return Round(value, precision, RoundingDirection.Down);
         }
-
 
     }
 }
