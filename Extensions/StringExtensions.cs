@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace CSharpUtilityExtensions.Extensions
 {
@@ -15,6 +17,69 @@ namespace CSharpUtilityExtensions.Extensions
                 return str += suffix;
 
             return str;
+        }
+        private static int GetDamerauLevenshteinDistance(string s, string t)
+        {
+
+
+            int n = s?.Length ?? 0; // length of s
+            int m = t?.Length ?? 0; // length of t
+
+            if (n == 0)
+            {
+                return m;
+            }
+
+            if (m == 0)
+            {
+                return n;
+            }
+
+            int[] p = new int[n + 1]; //'previous' cost array, horizontally
+            int[] d = new int[n + 1]; // cost array, horizontally
+
+            // indexes into strings s and t
+            int i; // iterates through s
+            int j; // iterates through t
+
+            for (i = 0; i <= n; i++)
+            {
+                p[i] = i;
+            }
+
+            for (j = 1; j <= m; j++)
+            {
+                char tJ = t[j - 1]; // jth character of t
+                d[0] = j;
+
+                for (i = 1; i <= n; i++)
+                {
+                    int cost = s[i - 1] == tJ ? 0 : 1; // cost
+                                                       // minimum of cell to the left+1, to the top+1, diagonally left and up +cost                
+                    d[i] = Math.Min(Math.Min(d[i - 1] + 1, p[i] + 1), p[i - 1] + cost);
+                }
+
+                // copy current distance counts to 'previous row' distance counts
+                int[] dPlaceholder = p; //placeholder to assist in swapping p and d
+                p = d;
+                d = dPlaceholder;
+            }
+
+            // our last action in the above loop was to switch d and p, so p now 
+            // actually has the most recent cost counts
+            return p[n];
+        }
+
+        /// <summary>
+        /// Checks if two strings are similar
+        /// </summary>
+        /// <param name="s"></param>
+        /// <param name="other"></param>
+        /// <param name="tolerance"></param>
+        /// <returns></returns>
+        public static bool Similiar(this string s, string other, int tolerance = 5)
+        {
+            return GetDamerauLevenshteinDistance(s, other) <= Math.Abs(tolerance);
         }
 
         /// <summary>
@@ -53,7 +118,7 @@ namespace CSharpUtilityExtensions.Extensions
                         .Replace(paragraphSeparator, string.Empty)
                         .RemoveZeroWidthSpace();
         }
- 
+
         public static bool ContainsIgnoreCase(this List<string> l, string check)
         {
             if (l == null)
@@ -168,11 +233,11 @@ namespace CSharpUtilityExtensions.Extensions
             else
                 return def;
         }
+
         /// <summary>
         /// Try to safely convert this string to a bool.
         /// </summary>
         /// <param name="def">The default value.</param>
-
         public static bool BoolParse(this string str, bool def = default(bool))
         {
             bool temp;
@@ -182,5 +247,27 @@ namespace CSharpUtilityExtensions.Extensions
                 return def;
         }
 
+        public static string Hash_MD5(this string str)
+        {
+            using (MD5 md5Hash = MD5.Create())
+            {
+                // Convert the input string to a byte array and compute the hash.
+                byte[] data = md5Hash.ComputeHash(Encoding.UTF8.GetBytes(str));
+
+                // Create a new Stringbuilder to collect the bytes
+                // and create a string.
+                StringBuilder sBuilder = new StringBuilder();
+
+                // Loop through each byte of the hashed data 
+                // and format each one as a hexadecimal string.
+                for (int i = 0; i < data.Length; i++)
+                {
+                    sBuilder.Append(data[i].ToString("x2"));
+                }
+
+                // Return the hexadecimal string.
+                return sBuilder.ToString();
+            }
+        }
     }
 }

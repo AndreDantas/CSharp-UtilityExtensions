@@ -61,14 +61,9 @@ namespace CSharpUtilityExtensions.Geometry.Classes
             return obj is Ellipse ellipse &&
                    Area == ellipse.Area &&
                    EqualityComparer<Vector2>.Default.Equals(_center, ellipse._center) &&
-                   _width == ellipse._width &&
-                   _height == ellipse._height &&
                    EqualityComparer<Angle>.Default.Equals(_rotation, ellipse._rotation) &&
                    height == ellipse.height &&
-                   width == ellipse.width &&
-                   EqualityComparer<Angle>.Default.Equals(rotation, ellipse.rotation) &&
-                   EqualityComparer<Vector2>.Default.Equals(center, ellipse.center) &&
-                   Area == ellipse.Area;
+                   width == ellipse.width;
         }
     }
 }
