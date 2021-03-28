@@ -14,10 +14,17 @@ namespace CSharpUtilityExtensions.Geometry.Classes
 
         public override double Area => Math.Abs((v1.x * (v2.y - v3.y) + v2.x * (v3.y - v1.y) + v3.x * (v1.y - v2.y)) / 2f);
 
+        public override Line[] Lines => new Line[3]
+        {
+            new Line(v1, v2),
+            new Line(v2, v3),
+            new Line(v3, v1)
+        };
+
         public Triangle()
         {
-
         }
+
         public Triangle(Vector2 v1) : this()
         {
             this.v1 = v1;
@@ -47,5 +54,4 @@ namespace CSharpUtilityExtensions.Geometry.Classes
             return hashCode;
         }
     }
-
 }

@@ -3,26 +3,23 @@ using System.Collections.Generic;
 
 namespace CSharpUtilityExtensions.Geometry.Classes
 {
-
     public class Ellipse : Shape2D
     {
-
         private Vector2 _center;
-        private double _width;
-        private double _height;
         private Angle _rotation;
 
-        public double height { get => _height; set => _height = value; }
-        public double width { get => _width; set => _width = value; }
+        public double height { get; set; }
+        public double width { get; set; }
         public Angle rotation { get => _rotation; set => _rotation = value; }
         public Vector2 center { get => _center; set => _center = value; }
 
-        public override double Area => Math.Abs((_width / 2f) * (_height / 2f) * Math.PI);
+        public override double Area => Math.Abs((width / 2f) * (height / 2f) * Math.PI);
+        public override Line[] Lines => null;
 
         public Ellipse()
         {
-
         }
+
         public Ellipse(double height, double width) : this()
         {
             this.height = height;
@@ -43,7 +40,6 @@ namespace CSharpUtilityExtensions.Geometry.Classes
             this.rotation = rotation;
             this.center = center;
         }
-
 
         public override int GetHashCode()
         {

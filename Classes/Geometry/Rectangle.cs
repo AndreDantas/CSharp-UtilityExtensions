@@ -1,19 +1,24 @@
-﻿
-using System;
+﻿using System;
 
 namespace CSharpUtilityExtensions.Geometry.Classes
 {
     public class Rectangle : Shape2D
     {
-
-        private double width;
-        private double height;
         private Angle rotation;
         private Vector2 center;
 
-        public override double Area => Math.Abs(width * height);
-        public double Height { get => height; set => height = value; }
-        public double Width { get => width; set => width = value; }
+        public override double Area => Math.Abs(Width * Height);
+
+        public override Line[] Lines => new Line[4]
+        {
+            new Line(TopLeft, TopRight),
+            new Line(TopRight, BottomRight),
+            new Line(BottomRight, BottomLeft),
+            new Line(BottomLeft, TopLeft)
+        };
+
+        public double Height { get; set; }
+        public double Width { get; set; }
         public Angle Rotation { get => rotation; set => rotation = value; }
         public Vector2 Center { get => center; set => center = value; }
 
@@ -31,7 +36,6 @@ namespace CSharpUtilityExtensions.Geometry.Classes
 
         public Rectangle()
         {
-            
         }
 
         public Rectangle(double height, double width, Angle rotation, Vector2 center) : this()
@@ -52,7 +56,5 @@ namespace CSharpUtilityExtensions.Geometry.Classes
             Height = height;
             Width = width;
         }
-
-
     }
 }

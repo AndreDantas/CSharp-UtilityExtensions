@@ -18,10 +18,9 @@ namespace CSharpUtilityExtensions.Extensions
 
             return str;
         }
-        private static int GetDamerauLevenshteinDistance(string s, string t)
+
+        public static int GetDamerauLevenshteinDistance(string s, string t)
         {
-
-
             int n = s?.Length ?? 0; // length of s
             int m = t?.Length ?? 0; // length of t
 
@@ -55,7 +54,8 @@ namespace CSharpUtilityExtensions.Extensions
                 for (i = 1; i <= n; i++)
                 {
                     int cost = s[i - 1] == tJ ? 0 : 1; // cost
-                                                       // minimum of cell to the left+1, to the top+1, diagonally left and up +cost                
+                                                       // minimum of cell to the left+1, to the
+                                                       // top+1, diagonally left and up +cost
                     d[i] = Math.Min(Math.Min(d[i - 1] + 1, p[i] + 1), p[i - 1] + cost);
                 }
 
@@ -65,29 +65,28 @@ namespace CSharpUtilityExtensions.Extensions
                 d = dPlaceholder;
             }
 
-            // our last action in the above loop was to switch d and p, so p now 
-            // actually has the most recent cost counts
+            // our last action in the above loop was to switch d and p, so p now actually has the
+            // most recent cost counts
             return p[n];
         }
 
         /// <summary>
         /// Checks if two strings are similar
         /// </summary>
-        /// <param name="s"></param>
-        /// <param name="other"></param>
-        /// <param name="tolerance"></param>
-        /// <returns></returns>
-        public static bool Similiar(this string s, string other, int tolerance = 5)
+        /// <param name="s"> </param>
+        /// <param name="other"> </param>
+        /// <param name="tolerance"> </param>
+        /// <returns> </returns>
+        public static bool Similar(this string s, string other, int tolerance = 5)
         {
             return GetDamerauLevenshteinDistance(s, other) <= Math.Abs(tolerance);
         }
 
         /// <summary>
         /// Returns a new String with its characters shuflled.
-        /// </summary> 
+        /// </summary>
         public static string Shuffle(this string str)
         {
-
             char[] array = str.ToCharArray();
             Random rng = new Random();
             int n = array.Length;
@@ -100,6 +99,17 @@ namespace CSharpUtilityExtensions.Extensions
                 array[n] = value;
             }
             return new string(array);
+        }
+
+        /// <summary>
+        /// If the string is Empty or Null, returns the replacement string
+        /// </summary>
+        /// <param name="s"> </param>
+        /// <param name="replacement"> </param>
+        /// <returns> </returns>
+        public static string IfEmpty(this string s, string replacement)
+        {
+            return string.IsNullOrEmpty(s) ? replacement : s;
         }
 
         public static string RemoveLineEndings(this string str)
@@ -145,9 +155,9 @@ namespace CSharpUtilityExtensions.Extensions
         /// <summary>
         /// Try to safely convert this string to a DateTime.
         /// </summary>
-        /// <param name="def">The default value.</param>
+        /// <param name="def"> The default value. </param>
 
-        public static DateTime DateTimeParse(this string str, DateTime def = default(DateTime), IFormatProvider format = null, DateTimeStyles style = DateTimeStyles.None)
+        public static DateTime DateTimeParse(this string str, DateTime def = default, IFormatProvider format = null, DateTimeStyles style = DateTimeStyles.None)
         {
             if (format == null)
                 format = CultureInfo.InvariantCulture;
@@ -157,12 +167,13 @@ namespace CSharpUtilityExtensions.Extensions
             else
                 return def;
         }
+
         /// <summary>
         /// Try to safely convert this string to a TimeSpan.
         /// </summary>
-        /// <param name="def">The default value.</param>
+        /// <param name="def"> The default value. </param>
 
-        public static TimeSpan TimeSpanParse(this string str, TimeSpan def = default(TimeSpan), IFormatProvider format = null)
+        public static TimeSpan TimeSpanParse(this string str, TimeSpan def = default, IFormatProvider format = null)
         {
             if (format == null)
                 format = CultureInfo.InvariantCulture;
@@ -173,12 +184,11 @@ namespace CSharpUtilityExtensions.Extensions
                 return def;
         }
 
-
         /// <summary>
         /// Try to safely convert this string to a int.
         /// </summary>
-        /// <param name="def">The default value.</param>
-        public static int IntParse(this string str, int def = default(int), IFormatProvider format = null, NumberStyles style = NumberStyles.Any)
+        /// <param name="def"> The default value. </param>
+        public static int IntParse(this string str, int def = 0, IFormatProvider format = null, NumberStyles style = NumberStyles.Any)
         {
             if (format == null)
                 format = CultureInfo.InvariantCulture;
@@ -188,12 +198,13 @@ namespace CSharpUtilityExtensions.Extensions
             else
                 return def;
         }
+
         /// <summary>
         /// Try to safely convert this string to a double.
         /// </summary>
-        /// <param name="def">The default value.</param>
+        /// <param name="def"> The default value. </param>
 
-        public static double DoubleParse(this string str, double def = default(double), IFormatProvider format = null, NumberStyles style = NumberStyles.Any)
+        public static double DoubleParse(this string str, double def = 0, IFormatProvider format = null, NumberStyles style = NumberStyles.Any)
         {
             if (format == null)
                 format = CultureInfo.InvariantCulture;
@@ -203,12 +214,13 @@ namespace CSharpUtilityExtensions.Extensions
             else
                 return def;
         }
+
         /// <summary>
         /// Try to safely convert this string to a float.
         /// </summary>
-        /// <param name="def">The default value.</param>
+        /// <param name="def"> The default value. </param>
 
-        public static float FloatParse(this string str, float def = default(float), IFormatProvider format = null, NumberStyles style = NumberStyles.Any)
+        public static float FloatParse(this string str, float def = 0, IFormatProvider format = null, NumberStyles style = NumberStyles.Any)
         {
             if (format == null)
                 format = CultureInfo.InvariantCulture;
@@ -218,12 +230,13 @@ namespace CSharpUtilityExtensions.Extensions
             else
                 return def;
         }
+
         /// <summary>
         /// Try to safely convert this string to a decimal.
         /// </summary>
-        /// <param name="def">The default value.</param>
+        /// <param name="def"> The default value. </param>
 
-        public static decimal DecimalParse(this string str, decimal def = default(decimal), IFormatProvider format = null, NumberStyles style = NumberStyles.Any)
+        public static decimal DecimalParse(this string str, decimal def = 0, IFormatProvider format = null, NumberStyles style = NumberStyles.Any)
         {
             if (format == null)
                 format = CultureInfo.InvariantCulture;
@@ -237,8 +250,8 @@ namespace CSharpUtilityExtensions.Extensions
         /// <summary>
         /// Try to safely convert this string to a bool.
         /// </summary>
-        /// <param name="def">The default value.</param>
-        public static bool BoolParse(this string str, bool def = default(bool))
+        /// <param name="def"> The default value. </param>
+        public static bool BoolParse(this string str, bool def = false)
         {
             bool temp;
             if (bool.TryParse(str, out temp))
@@ -254,12 +267,10 @@ namespace CSharpUtilityExtensions.Extensions
                 // Convert the input string to a byte array and compute the hash.
                 byte[] data = md5Hash.ComputeHash(Encoding.UTF8.GetBytes(str));
 
-                // Create a new Stringbuilder to collect the bytes
-                // and create a string.
+                // Create a new Stringbuilder to collect the bytes and create a string.
                 StringBuilder sBuilder = new StringBuilder();
 
-                // Loop through each byte of the hashed data 
-                // and format each one as a hexadecimal string.
+                // Loop through each byte of the hashed data and format each one as a hexadecimal string.
                 for (int i = 0; i < data.Length; i++)
                 {
                     sBuilder.Append(data[i].ToString("x2"));

@@ -5,24 +5,29 @@ namespace CSharpUtilityExtensions.Classes
 {
     public class Param<T>
     {
-        public Param(T value)
+        public Param(T value, EqualityComparer<T> comparer = null)
         {
             this.dirty = false;
             this.value = value;
+            this.comparer = comparer ?? EqualityComparer<T>.Default;
         }
+
+        private EqualityComparer<T> comparer;
         private bool dirty;
         private T value;
+
         public T Value
         {
             get => value;
 
             set
             {
-                if (!EqualityComparer<T>.Default.Equals(this.value, value))
+                if (comparer.Equals(this.value, value))
                     this.Dirty = true;
                 this.value = value;
             }
         }
+
         public bool Dirty
         {
             get => dirty ? !(dirty = false) : dirty;
@@ -31,8 +36,8 @@ namespace CSharpUtilityExtensions.Classes
         }
 
         public static implicit operator Param<T>(T d) => new Param<T>(d);
-        public static implicit operator T(Param<T> d) => d.value;
 
+        public static implicit operator T(Param<T> d) => d.value;
 
         public override string ToString()
         {
