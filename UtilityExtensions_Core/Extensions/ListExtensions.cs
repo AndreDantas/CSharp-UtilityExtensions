@@ -6,33 +6,54 @@ namespace CSharpUtilityExtensions.Extensions
     public static class ListExtensions
     {
         /// <summary>
-        /// Removes items from the list where the condition applies.
+        /// Removes items from this list where the condition applies.
         /// </summary>
+        /// <returns> The number of elements removed </returns>
         /// <param name="l"> </param>
         /// <param name="condition"> </param>
         /// <typeparam name="T"> </typeparam>
-        public static void RemoveWhere<T>(this List<T> l, Predicate<T> condition)
+        public static int RemoveWhere<T>(this List<T> l, Predicate<T> condition)
         {
             if (l == null || condition == null)
-                return;
+                return 0;
+
+            int count = 0;
 
             for (int i = l.Count - 1; i >= 0; i--)
             {
                 if (condition(l[i]))
+                {
                     l.RemoveAt(i);
+                    count++;
+                }
             }
+
+            return count;
         }
 
-        public static void RemoveNull<T>(this List<T> l)
+        /// <summary>
+        /// Removes null elements in this list
+        /// </summary>
+        /// <returns> The number of elements removed </returns>
+        /// <typeparam name="T"> </typeparam>
+        /// <param name="l"> </param>
+        public static int RemoveNull<T>(this List<T> l)
         {
             if (l == null || l.Count == 0)
-                return;
+                return 0;
+
+            int count = 0;
 
             for (int i = l.Count - 1; i >= 0; i--)
             {
                 if (l[i] == null)
+                {
                     l.RemoveAt(i);
+                    count++;
+                }
             }
+
+            return count;
         }
 
         public static T Search<T>(this List<T> l, Func<T, bool> searchFunction)

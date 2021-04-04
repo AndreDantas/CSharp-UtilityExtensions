@@ -155,9 +155,9 @@ namespace CSharpUtilityExtensions.Extensions
         /// <summary>
         /// Try to safely convert this string to a DateTime.
         /// </summary>
-        /// <param name="def"> The default value. </param>
+        /// <param name="@default"> The default value. </param>
 
-        public static DateTime DateTimeParse(this string str, DateTime def = default, IFormatProvider format = null, DateTimeStyles style = DateTimeStyles.None)
+        public static DateTime ToDateTime(this string str, DateTime @default = default, IFormatProvider format = null, DateTimeStyles style = DateTimeStyles.None)
         {
             if (format == null)
                 format = CultureInfo.InvariantCulture;
@@ -165,15 +165,15 @@ namespace CSharpUtilityExtensions.Extensions
             if (DateTime.TryParse(str, format, style, out temp))
                 return temp;
             else
-                return def;
+                return @default;
         }
 
         /// <summary>
         /// Try to safely convert this string to a TimeSpan.
         /// </summary>
-        /// <param name="def"> The default value. </param>
+        /// <param name="@default"> The default value. </param>
 
-        public static TimeSpan TimeSpanParse(this string str, TimeSpan def = default, IFormatProvider format = null)
+        public static TimeSpan ToTimeSpan(this string str, TimeSpan @default = default, IFormatProvider format = null)
         {
             if (format == null)
                 format = CultureInfo.InvariantCulture;
@@ -181,14 +181,14 @@ namespace CSharpUtilityExtensions.Extensions
             if (TimeSpan.TryParse(str, format, out temp))
                 return temp;
             else
-                return def;
+                return @default;
         }
 
         /// <summary>
         /// Try to safely convert this string to a int.
         /// </summary>
-        /// <param name="def"> The default value. </param>
-        public static int IntParse(this string str, int def = 0, IFormatProvider format = null, NumberStyles style = NumberStyles.Any)
+        /// <param name="@default"> The default value. </param>
+        public static int ToInt(this string str, int @default = 0, IFormatProvider format = null, NumberStyles style = NumberStyles.Any)
         {
             if (format == null)
                 format = CultureInfo.InvariantCulture;
@@ -196,15 +196,30 @@ namespace CSharpUtilityExtensions.Extensions
             if (int.TryParse(str, style, format, out temp))
                 return temp;
             else
-                return def;
+                return @default;
+        }
+
+        /// <summary>
+        /// Try to safely convert this string to a long.
+        /// </summary>
+        /// <param name="@default"> The default value. </param>
+        public static long ToLong(this string str, long @default = 0, IFormatProvider format = null, NumberStyles style = NumberStyles.Any)
+        {
+            if (format == null)
+                format = CultureInfo.InvariantCulture;
+            long temp;
+            if (long.TryParse(str, style, format, out temp))
+                return temp;
+            else
+                return @default;
         }
 
         /// <summary>
         /// Try to safely convert this string to a double.
         /// </summary>
-        /// <param name="def"> The default value. </param>
+        /// <param name="@default"> The default value. </param>
 
-        public static double DoubleParse(this string str, double def = 0, IFormatProvider format = null, NumberStyles style = NumberStyles.Any)
+        public static double ToDouble(this string str, double @default = 0, IFormatProvider format = null, NumberStyles style = NumberStyles.Any)
         {
             if (format == null)
                 format = CultureInfo.InvariantCulture;
@@ -212,15 +227,15 @@ namespace CSharpUtilityExtensions.Extensions
             if (double.TryParse(str, style, format, out temp))
                 return temp;
             else
-                return def;
+                return @default;
         }
 
         /// <summary>
         /// Try to safely convert this string to a float.
         /// </summary>
-        /// <param name="def"> The default value. </param>
+        /// <param name="@default"> The default value. </param>
 
-        public static float FloatParse(this string str, float def = 0, IFormatProvider format = null, NumberStyles style = NumberStyles.Any)
+        public static float ToFloat(this string str, float @default = 0, IFormatProvider format = null, NumberStyles style = NumberStyles.Any)
         {
             if (format == null)
                 format = CultureInfo.InvariantCulture;
@@ -228,15 +243,15 @@ namespace CSharpUtilityExtensions.Extensions
             if (float.TryParse(str, style, format, out temp))
                 return temp;
             else
-                return def;
+                return @default;
         }
 
         /// <summary>
         /// Try to safely convert this string to a decimal.
         /// </summary>
-        /// <param name="def"> The default value. </param>
+        /// <param name="@default"> The default value. </param>
 
-        public static decimal DecimalParse(this string str, decimal def = 0, IFormatProvider format = null, NumberStyles style = NumberStyles.Any)
+        public static decimal ToDecimal(this string str, decimal @default = 0, IFormatProvider format = null, NumberStyles style = NumberStyles.Any)
         {
             if (format == null)
                 format = CultureInfo.InvariantCulture;
@@ -244,20 +259,16 @@ namespace CSharpUtilityExtensions.Extensions
             if (decimal.TryParse(str, style, format, out temp))
                 return temp;
             else
-                return def;
+                return @default;
         }
 
         /// <summary>
         /// Try to safely convert this string to a bool.
         /// </summary>
-        /// <param name="def"> The default value. </param>
-        public static bool BoolParse(this string str, bool def = false)
+        /// <param name="@default"> The default value. </param>
+        public static bool ToBool(this string str, bool @default = false)
         {
-            bool temp;
-            if (bool.TryParse(str, out temp))
-                return temp;
-            else
-                return def;
+            return str.Trim().ToLower().In("true", "1");
         }
 
         public static string Hash_MD5(this string str)
