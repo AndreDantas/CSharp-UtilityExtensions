@@ -5,6 +5,7 @@ using System.Text;
 using NUnit.Framework;
 using CSharpUtilityExtensions.Extensions;
 using CSharpUtilityExtensions;
+using CSharpUtilityExtensions.Classes;
 
 namespace UtilityExtensions_Test
 {
@@ -16,6 +17,7 @@ namespace UtilityExtensions_Test
             public int intTest { get; set; } = 42;
             public decimal decimalTest { get; set; } = 12.34m;
             public NestedClass nestedClassTest { get; set; } = new NestedClass();
+            public List<decimal> listTest { get; set; } = new List<decimal> { 1.2m, 32 };
         }
 
         private class NestedClass
@@ -23,6 +25,7 @@ namespace UtilityExtensions_Test
             public string nestedStringTest { get; set; } = "test2";
             public int nestedIntTest { get; set; } = 21;
             public decimal nestedDecimalTest { get; set; } = 100.1m;
+            public List<decimal> nestedListTest { get; set; } = new List<decimal> { 1.2m, 32 };
         }
 
         [SetUp]
@@ -30,7 +33,7 @@ namespace UtilityExtensions_Test
         {
         }
 
-        [Test]
+        [Test, Order(0)]
         public void ConvertObjectToMap()
         {
             var obj = new MapConvertionTest();
@@ -39,10 +42,12 @@ namespace UtilityExtensions_Test
                 { "stringTest" , "test" },
                 { "intTest" , 42 },
                 { "decimalTest" , 12.34m },
+                { "listTest" , new List<decimal> { 1.2m, 32 } },
                 { "nestedClassTest" ,  new Map(){
                     {"nestedStringTest", "test2" },
                     {"nestedIntTest", 21 },
                     {"nestedDecimalTest", 100.1m },
+                    {"nestedListTest", new List<decimal> { 1.2m, 32 }},
                 } }
             };
 
@@ -83,8 +88,12 @@ namespace UtilityExtensions_Test
                 {"field2", null },
                 {"field3", 134.12 },
                 {"field4", "test" },
+                {"field5", new List<int>{1, 2} },
+                {"field6", new Map(){
+                    {"field1", 3 }
+                } },
             };
-            string checkString = "{\"field1\":10,\"field2\":null,\"field3\":134.12,\"field4\":\"test\"}";
+            string checkString = "{\"field1\":10,\"field2\":null,\"field3\":134.12,\"field4\":\"test\",\"field5\":[1,2],\"field6\":{\"field1\":3}}";
             string mapString = map.ToString();
 
             Assert.IsTrue(checkString == mapString);
@@ -147,11 +156,11 @@ namespace UtilityExtensions_Test
             var map1 = new Map()
             {
                 {"field1", 10 },
-                {"field2", "test" },
             };
             var map2 = new Map()
             {
-                {"field1", 10 }
+                {"field1", 10 },
+                {"field2", "test" },
             };
 
             Assert.IsFalse(map1 == map2);

@@ -1,5 +1,7 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace CSharpUtilityExtensions.Extensions
 {
@@ -124,6 +126,49 @@ namespace CSharpUtilityExtensions.Extensions
         public static bool ValidIndex<T>(this List<T> list, int index)
         {
             return (index >= 0 && index < list.Count);
+        }
+
+        /// <summary>
+        /// Checks if the <paramref name="list2" /> items are contained in <paramref name="list1"
+        /// />, ignoring order.
+        /// </summary>
+        /// <typeparam name="T"> </typeparam>
+        /// <param name="list1"> </param>
+        /// <param name="list2"> </param>
+        /// <param name="comparer"> </param>
+        /// <returns> </returns>
+        public static bool ContainsSequenceIgnoreOrder(this IEnumerable list1, IEnumerable list2, IEqualityComparer<object> comparer = null)
+        {
+            if (list1 is ICollection ilist1 && list2 is ICollection ilist2 && (ilist1.Count == 0 || ilist2.Count == 0 || ilist2.Count > ilist1.Count))
+                return false;
+
+            if (comparer == null)
+                comparer = EqualityComparer<object>.Default;
+
+            var itemCounts = new Dictionary<object, int>(comparer);
+            foreach (var s in list1)
+            {
+                if (itemCounts.ContainsKey(s))
+                {
+                    itemCounts[s]++;
+                }
+                else
+                {
+                    itemCounts.Add(s, 1);
+                }
+            }
+            foreach (var s in list2)
+            {
+                if (itemCounts.ContainsKey(s))
+                {
+                    itemCounts[s]--;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            return itemCounts.Values.All(c => c >= 0);
         }
     }
 }

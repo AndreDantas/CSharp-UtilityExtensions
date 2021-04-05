@@ -1,7 +1,6 @@
-
 using System;
 
-namespace CSharpUtilityExtensions.Geometry.Classes
+namespace CSharpUtilityExtensions.Classes.Geometry
 {
     public struct Line
     {
@@ -16,7 +15,5 @@ namespace CSharpUtilityExtensions.Geometry.Classes
             this.start = start;
             this.end = end;
         }
-
-
     }
 }

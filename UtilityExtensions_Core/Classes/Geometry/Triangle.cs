@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CSharpUtilityExtensions.Geometry.Classes
+namespace CSharpUtilityExtensions.Classes.Geometry
 {
     public class Triangle : Shape2D
     {

@@ -1,4 +1,4 @@
-namespace CSharpUtilityExtensions.Geometry.Classes
+namespace CSharpUtilityExtensions.Classes.Geometry
 {
     public abstract class Shape2D
     {

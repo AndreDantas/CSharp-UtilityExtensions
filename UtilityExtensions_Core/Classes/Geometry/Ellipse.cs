@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace CSharpUtilityExtensions.Geometry.Classes
+namespace CSharpUtilityExtensions.Classes.Geometry
 {
     public class Ellipse : Shape2D
     {

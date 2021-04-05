@@ -1,10 +1,12 @@
+using CSharpUtilityExtensions.Extensions;
+using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Reflection;
 using System.Text;
 using UtilityExtensions_Core.Classes;
 
-namespace CSharpUtilityExtensions
+namespace CSharpUtilityExtensions.Classes
 {
     public class Map : Dictionary<string, object>
     {
@@ -20,16 +22,10 @@ namespace CSharpUtilityExtensions
 
                 foreach (var item in this)
                 {
-                    if (!otherMap.ContainsKey(item.Key) ||
-                        item.Value?.GetType() != otherMap[item.Key]?.GetType())
+                    if (!otherMap.ContainsKey(item.Key))
                         return false;
 
-                    if (item.Value is Map itemMap)
-                    {
-                        if (itemMap != (Map)otherMap[item.Key])
-                            return false;
-                    }
-                    else if (!item.Value.Equals(otherMap[item.Key]))
+                    if (!CompareObjects(item.Value, otherMap[item.Key]))
                         return false;
                 }
             }
@@ -70,18 +66,81 @@ namespace CSharpUtilityExtensions
                     keyCount--;
 
                     sr.Append($"\"{item.Key}\":");
-                    if (item.Value == null)
-                        sr.Append("null");
-                    else if (item.Value is string)
-                        sr.Append($"\"{item.Value}\"");
-                    else
-                        sr.Append(item.Value.ToString());
+                    sr.Append(ConvertObjectToString(item.Value));
 
                     if (keyCount > 0)
                         sr.Append(",");
                 }
             }
             sr.Append("}");
+            return sr.ToString();
+        }
+
+        private class ObjectComparer : IEqualityComparer<object>
+        {
+            public new bool Equals(object x, object y)
+            {
+                return CompareObjects(x, y);
+            }
+
+            public int GetHashCode(object obj)
+            {
+                return obj?.GetHashCode() ?? 0;
+            }
+        }
+
+        private static bool CompareObjects(object a, object b)
+        {
+            if (a == null && b == null)
+                return true;
+
+            if (a?.GetType() != b?.GetType())
+                return false;
+
+            if (a.GetType().IsIEnumerable() && a is Map == false)
+                return CompareIEnumerable(a as IEnumerable, b as IEnumerable);
+            else
+                return a.Equals(b);
+        }
+
+        private static bool CompareIEnumerable(IEnumerable a, IEnumerable b)
+        {
+            return ListExtensions.ContainsSequenceIgnoreOrder(a, b, new ObjectComparer());
+        }
+
+        private static string ConvertObjectToString(object obj)
+        {
+            StringBuilder sr = new StringBuilder();
+
+            if (obj == null)
+                sr.Append("null");
+            else if (obj is string)
+                sr.Append($"\"{obj}\"");
+            else if (obj.GetType().IsIEnumerable() && obj is Map == false)
+                sr.Append(IEnumerableToString(obj as IEnumerable));
+            else
+                sr.Append(obj.ToString());
+
+            return sr.ToString();
+        }
+
+        private static string IEnumerableToString(IEnumerable obj)
+        {
+            if (obj == null)
+                return "null";
+
+            StringBuilder sr = new StringBuilder();
+            sr.Append("[");
+
+            foreach (var item in obj)
+            {
+                sr.Append(ConvertObjectToString(item));
+                sr.Append(",");
+            };
+            if (sr.Length > 1)
+                sr.Length--;
+            sr.Append("]");
+
             return sr.ToString();
         }
     }

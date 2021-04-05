@@ -1,6 +1,7 @@
 ﻿using System;
 using CSharpUtilityExtensions.Extensions;
-namespace CSharpUtilityExtensions.Geometry.Classes
+
+namespace CSharpUtilityExtensions.Classes.Geometry
 {
     public struct Angle
     {
@@ -20,18 +21,17 @@ namespace CSharpUtilityExtensions.Geometry.Classes
         {
             get => ClampAngle(value); private set => this.value = ClampAngle(value);
         }
+
         public double Rad
         {
             get => value * (Math.PI / 180);
         }
-
 
         public bool InsideRange(Angle start, Angle end)
         {
             if (start.Value < end.Value)
                 return start.Value <= Value && Value <= end.Value;
             return start.Value <= Value || Value <= end.Value;
-
         }
 
         public static implicit operator Angle(double d)
@@ -43,6 +43,7 @@ namespace CSharpUtilityExtensions.Geometry.Classes
         {
             return d.value;
         }
+
         public override string ToString()
         {
             return Value + "°";

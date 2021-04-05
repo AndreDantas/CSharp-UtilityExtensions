@@ -1,13 +1,13 @@
 using System;
 
-namespace CSharpUtilityExtensions.Geometry.Classes
+namespace CSharpUtilityExtensions.Classes.Geometry
 {
     public struct Vector2
     {
-        double _x;
+        private double _x;
 
         public double x { get => _x; private set => _x = value; }
-        double _y;
+        private double _y;
 
         public double y { get => _y; private set => _y = value; }
 
@@ -26,15 +26,11 @@ namespace CSharpUtilityExtensions.Geometry.Classes
         public static Vector2 right => new Vector2(1, 0);
 
         // <summary>
-        /// Rotates one Vector2 around another
-        /// </summary>
-        /// <param name="pointToRotate">The point to rotate.</param>
-        /// <param name="centerPoint">The center point of rotation.</param>
-        /// <param name="angleInDegrees">The rotation angle in degrees.</param>
-        /// <returns>Rotated point</returns>
+        /// Rotates one Vector2 around another </summary> <param name="pointToRotate">The point to
+        /// rotate.</param> <param name="centerPoint">The center point of rotation.</param> <param
+        /// name="angleInDegrees">The rotation angle in degrees.</param> <returns>Rotated point</returns>
         public static Vector2 RotateVector(Vector2 pointToRotate, Vector2 centerPoint, double angleInDegrees)
         {
-
             double angleInRadians = Math.Abs(angleInDegrees) * (Math.PI / 180);
 
             double cosTheta = Math.Cos(angleInRadians);
@@ -54,7 +50,6 @@ namespace CSharpUtilityExtensions.Geometry.Classes
                 newX = originX * cosTheta + originY * sinTheta;
                 newY = -originX * sinTheta + originY * cosTheta;
             }
-
 
             return new Vector2(newX + centerPoint.x, newY + centerPoint.y);
         }

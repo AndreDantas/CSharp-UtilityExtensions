@@ -1,15 +1,15 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
-namespace CSharpUtilityExtensions
+
+namespace CSharpUtilityExtensions.Classes
 {
     public struct Position
     {
-
         private int _x;
         private int _y;
         public int x { get => _x; set => _x = value; }
         public int y { get => _y; set => _y = value; }
+
         public Position(int x, int y)
         {
             _x = 0;
@@ -65,6 +65,7 @@ namespace CSharpUtilityExtensions
 
             return new Position(-a.x, -a.y);
         }
+
         public static Position operator -(Position a, Position b)
         {
             if (a == null)

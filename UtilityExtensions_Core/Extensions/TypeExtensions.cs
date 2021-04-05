@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Linq;
 
 namespace CSharpUtilityExtensions.Extensions
@@ -25,6 +26,11 @@ namespace CSharpUtilityExtensions.Extensions
                 typeof(Guid)
                 }.Contains(type) ||
                 Convert.GetTypeCode(type) != TypeCode.Object;
+        }
+
+        public static bool IsIEnumerable(this Type t)
+        {
+            return typeof(IEnumerable).IsAssignableFrom(t);
         }
     }
 }

@@ -1,17 +1,16 @@
 using System;
-using CSharpUtilityExtensions.Geometry.Classes;
+using CSharpUtilityExtensions.Classes.Geometry;
 
 namespace CSharpUtilityExtensions.Extensions
 {
     public static class GeometryExtensions
     {
-
         /// <summary>
         /// Returns the distance between two points.
         /// </summary>
-        /// <param name="start"></param>
-        /// <param name="end"></param>
-        /// <returns></returns>
+        /// <param name="start"> </param>
+        /// <param name="end"> </param>
+        /// <returns> </returns>
         public static double Distance(Vector2 start, Vector2 end)
         {
             double deltaX = (end.x - start.x) * (end.x - start.x);

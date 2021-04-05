@@ -1,4 +1,6 @@
+using CSharpUtilityExtensions.Classes;
 using System;
+using System.ComponentModel;
 using System.Reflection;
 
 namespace CSharpUtilityExtensions.Extensions
@@ -10,17 +12,16 @@ namespace CSharpUtilityExtensions.Extensions
             if (obj == null)
                 return null;
 
-            PropertyInfo[] properties;
-            properties = obj.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            var properties = TypeDescriptor.GetProperties(obj);
 
             Map map = new Map();
 
-            foreach (var prop in properties)
+            foreach (PropertyDescriptor prop in properties)
             {
-                if (prop.PropertyType.IsSimpleType())
-                    map[prop.Name] = prop.GetValue(obj, null);
+                if (prop.PropertyType.IsSimpleType() || prop.PropertyType.IsIEnumerable())
+                    map[prop.Name] = prop.GetValue(obj);
                 else
-                    map[prop.Name] = prop.GetValue(obj, null).ToMap();
+                    map[prop.Name] = prop.GetValue(obj).ToMap();
             }
 
             return map;
@@ -51,6 +52,21 @@ namespace CSharpUtilityExtensions.Extensions
             }
 
             return obj;
+        }
+
+        public static object GetIndexedPropertyValues(PropertyInfo prop, object target)
+        {
+            if (prop == null || target == null)
+                return null;
+
+            int length = prop.GetIndexParameters().Length;
+            var objects = new object[length];
+            for (int i = 0; i < length; i++)
+            {
+                objects[i] = prop.GetValue(target, new object[] { i });
+            }
+
+            return objects;
         }
     }
 }
