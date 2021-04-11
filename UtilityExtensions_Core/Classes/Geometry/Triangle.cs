@@ -4,13 +4,9 @@ namespace CSharpUtilityExtensions.Classes.Geometry
 {
     public class Triangle : Shape2D
     {
-        private Vector2 _v3;
-        private Vector2 _v1;
-        private Vector2 _v2;
-
-        public Vector2 v1 { get => _v1; set => _v1 = value; }
-        public Vector2 v2 { get => _v2; set => _v2 = value; }
-        public Vector2 v3 { get => _v3; set => _v3 = value; }
+        public Vector2 v1;
+        public Vector2 v2;
+        public Vector2 v3;
 
         public override double Area => Math.Abs((v1.x * (v2.y - v3.y) + v2.x * (v3.y - v1.y) + v3.x * (v1.y - v2.y)) / 2f);
 
@@ -21,19 +17,10 @@ namespace CSharpUtilityExtensions.Classes.Geometry
             new Line(v3, v1)
         };
 
-        public Triangle()
-        {
-        }
+        public override Vector2[] Points => new Vector2[3] { v1, v2, v3 };
 
-        public Triangle(Vector2 v1) : this()
+        private Triangle()
         {
-            this.v1 = v1;
-        }
-
-        public Triangle(Vector2 v1, Vector2 v2) : this()
-        {
-            this.v1 = v1;
-            this.v2 = v2;
         }
 
         public Triangle(Vector2 v1, Vector2 v2, Vector2 v3) : this()

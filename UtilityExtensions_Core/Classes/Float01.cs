@@ -7,20 +7,16 @@ namespace CSharpUtilityExtensions.Classes
     {
         private float value;
 
+        public float Value { get => value; set => this.value = Math.Max(Math.Min(value, 1f), 0f); }
+
         public Float01(float value)
         {
             this.value = Math.Max(Math.Min(value, 1f), 0f);
         }
 
-        public static implicit operator float(Float01 f)
-        {
-            return f.value;
-        }
+        public static implicit operator float(Float01 f) => f.Value;
 
-        public static implicit operator Float01(float f)
-        {
-            return new Float01(f);
-        }
+        public static implicit operator Float01(float f) => new Float01(f);
 
         public static Float01 operator +(Float01 f1, Float01 f2) => new Float01(f1.Value + f2.Value);
 
@@ -35,12 +31,12 @@ namespace CSharpUtilityExtensions.Classes
         public static float operator -(float f1, Float01 f2) => f1 - f2.Value;
 
         /// <summary>
-        /// Increases the value by 0.1f.
+        /// Increases the value by 0.1.
         /// </summary>
         public static Float01 operator ++(Float01 f1) => new Float01(f1.Value += 0.1f);
 
         /// <summary>
-        /// Decreases the value by 0.1f.
+        /// Decreases the value by 0.1.
         /// </summary>
         public static Float01 operator --(Float01 f1) => new Float01(f1.Value -= 0.1f);
 
@@ -63,8 +59,6 @@ namespace CSharpUtilityExtensions.Classes
         public static bool operator true(Float01 f1) => f1.Value <= 1 && f1.Value > 0;
 
         public static bool operator false(Float01 f1) => f1.Value == 0;
-
-        public float Value { get => value; set => this.value = Math.Max(Math.Min(value, 1f), 0f); }
 
         public override bool Equals(object obj)
         {

@@ -117,14 +117,14 @@ namespace CSharpUtilityExtensions.Classes
             else if (obj is string)
                 sr.Append($"\"{obj}\"");
             else if (obj.GetType().IsIEnumerable() && obj is Map == false)
-                sr.Append(IEnumerableToString(obj as IEnumerable));
+                sr.Append(ConvertIEnumerableToString(obj as IEnumerable));
             else
                 sr.Append(obj.ToString());
 
             return sr.ToString();
         }
 
-        private static string IEnumerableToString(IEnumerable obj)
+        private static string ConvertIEnumerableToString(IEnumerable obj)
         {
             if (obj == null)
                 return "null";

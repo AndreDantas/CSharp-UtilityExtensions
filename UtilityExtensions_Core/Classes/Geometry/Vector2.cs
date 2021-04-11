@@ -1,46 +1,46 @@
+using CSharpUtilityExtensions.Extensions;
 using System;
+using System.Globalization;
 
 namespace CSharpUtilityExtensions.Classes.Geometry
 {
     public struct Vector2
     {
-        private double _x;
+        public double x;
 
-        public double x { get => _x; private set => _x = value; }
-        private double _y;
-
-        public double y { get => _y; private set => _y = value; }
+        public double y;
 
         public Vector2(double x, double y)
         {
-            _x = 0;
-            _y = 0;
             this.x = x;
             this.y = y;
         }
 
-        public static Vector2 zero => new Vector2();
-        public static Vector2 up => new Vector2(0, 1);
-        public static Vector2 down => new Vector2(0, -1);
-        public static Vector2 left => new Vector2(-1, 0);
-        public static Vector2 right => new Vector2(1, 0);
+        public static Vector2 Zero => new Vector2();
+        public static Vector2 Up => new Vector2(0, 1);
+        public static Vector2 Down => new Vector2(0, -1);
+        public static Vector2 Left => new Vector2(-1, 0);
+        public static Vector2 Right => new Vector2(1, 0);
 
-        // <summary>
-        /// Rotates one Vector2 around another </summary> <param name="pointToRotate">The point to
-        /// rotate.</param> <param name="centerPoint">The center point of rotation.</param> <param
-        /// name="angleInDegrees">The rotation angle in degrees.</param> <returns>Rotated point</returns>
-        public static Vector2 RotateVector(Vector2 pointToRotate, Vector2 centerPoint, double angleInDegrees)
+        /// <summary>
+        /// Rotates one Vector2 around another
+        /// </summary>
+        /// <param name="pointToRotate"> The point to rotate. </param>
+        /// <param name="centerPoint"> The center point of rotation. </param>
+        /// <param name="angle"> The rotation angle. </param>
+        /// <returns> Rotated point </returns>
+        public static Vector2 RotateVector(Vector2 pointToRotate, Vector2 centerPoint, Angle angle)
         {
-            double angleInRadians = Math.Abs(angleInDegrees) * (Math.PI / 180);
+            double angleInRadians = angle.Rad;
 
             double cosTheta = Math.Cos(angleInRadians);
             double sinTheta = Math.Sin(angleInRadians);
 
             double originX = pointToRotate.x - centerPoint.x;
             double originY = pointToRotate.y - centerPoint.y;
+            double newY, newX;
 
-            double newX = 0, newY = 0;
-            if (angleInDegrees >= 0)
+            if (angle >= 0)
             {
                 newX = originX * cosTheta - originY * sinTheta;
                 newY = originX * sinTheta + originY * cosTheta;
@@ -54,9 +54,21 @@ namespace CSharpUtilityExtensions.Classes.Geometry
             return new Vector2(newX + centerPoint.x, newY + centerPoint.y);
         }
 
+        public static Vector2 operator +(Vector2 v1, Vector2 v2) => new Vector2(v1.x + v2.x, v1.y + v2.y);
+
+        public static Vector2 operator -(Vector2 v1, Vector2 v2) => new Vector2(v1.x - v2.x, v1.y - v2.y);
+
+        public static Vector2 operator *(Vector2 v1, Vector2 v2) => new Vector2(v1.x * v2.x, v1.y * v2.y);
+
+        public static Vector2 operator /(Vector2 v1, Vector2 v2) => new Vector2(v1.x / v2.x, v1.y / v2.y);
+
+        public static bool operator ==(Vector2 v1, Vector2 v2) => v1.Equals(v2);
+
+        public static bool operator !=(Vector2 v1, Vector2 v2) => !(v1 == v2);
+
         public override string ToString()
         {
-            return string.Format("({0},{1})", x, y);
+            return string.Format(CultureInfo.InvariantCulture, "({0}, {1})", x, y);
         }
 
         public override int GetHashCode()
@@ -70,8 +82,8 @@ namespace CSharpUtilityExtensions.Classes.Geometry
         public override bool Equals(object obj)
         {
             return obj is Vector2 vector &&
-                   x == vector.x &&
-                   y == vector.y;
+                   x.CloseTo(vector.x) &&
+                   y.CloseTo(vector.y);
         }
     }
 }

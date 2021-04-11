@@ -4,9 +4,10 @@ namespace CSharpUtilityExtensions.Classes.Geometry
 {
     public class Rectangle : Shape2D
     {
-        private Angle rotation;
-        private Vector2 center;
-
+        public double Height;
+        public double Width;
+        public Angle Rotation;
+        public Vector2 Center;
         public override double Area => Math.Abs(Width * Height);
 
         public override Line[] Lines => new Line[4]
@@ -17,10 +18,9 @@ namespace CSharpUtilityExtensions.Classes.Geometry
             new Line(BottomLeft, TopLeft)
         };
 
-        public double Height { get; set; }
-        public double Width { get; set; }
-        public Angle Rotation { get => rotation; set => rotation = value; }
-        public Vector2 Center { get => center; set => center = value; }
+        public override Vector2[] Points => new Vector2[4] {
+            TopLeft, TopRight, BottomRight, BottomLeft
+        };
 
         private Vector2 topLeftRaw { get => new Vector2(Center.x - Width / 2f, Center.y + Height / 2f); }
         public Vector2 TopLeft { get => Vector2.RotateVector(topLeftRaw, Center, Rotation); }

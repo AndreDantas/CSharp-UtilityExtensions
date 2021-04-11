@@ -1,20 +1,21 @@
-﻿using System;
+﻿using CSharpUtilityExtensions.Extensions;
+using System;
 using System.Collections.Generic;
 
 namespace CSharpUtilityExtensions.Classes.Geometry
 {
     public class Ellipse : Shape2D
     {
-        private Vector2 _center;
-        private Angle _rotation;
+        public double Height;
+        public double Width;
+        public Angle Rotation;
+        public Vector2 Center;
+        public int Resolution = 5;
 
-        public double height { get; set; }
-        public double width { get; set; }
-        public Angle rotation { get => _rotation; set => _rotation = value; }
-        public Vector2 center { get => _center; set => _center = value; }
-
-        public override double Area => Math.Abs((width / 2f) * (height / 2f) * Math.PI);
+        public override double Area => Math.Abs((Width / 2f) * (Height / 2f) * Math.PI);
         public override Line[] Lines => null;
+
+        public override Vector2[] Points => null;
 
         public Ellipse()
         {
@@ -22,44 +23,43 @@ namespace CSharpUtilityExtensions.Classes.Geometry
 
         public Ellipse(double height, double width) : this()
         {
-            this.height = height;
-            this.width = width;
+            this.Height = height;
+            this.Width = width;
         }
 
         public Ellipse(double height, double width, Angle rotation) : this()
         {
-            this.height = height;
-            this.width = width;
-            this.rotation = rotation;
+            this.Height = height;
+            this.Width = width;
+            this.Rotation = rotation;
         }
 
         public Ellipse(double height, double width, Angle rotation, Vector2 center) : this()
         {
-            this.height = height;
-            this.width = width;
-            this.rotation = rotation;
-            this.center = center;
+            this.Height = height;
+            this.Width = width;
+            this.Rotation = rotation;
+            this.Center = center;
         }
 
         public override int GetHashCode()
         {
             int hashCode = -2012222744;
 
-            hashCode = hashCode * -1521134295 + height.GetHashCode();
-            hashCode = hashCode * -1521134295 + width.GetHashCode();
-            hashCode = hashCode * -1521134295 + rotation.GetHashCode();
-            hashCode = hashCode * -1521134295 + center.GetHashCode();
+            hashCode = hashCode * -1521134295 + Height.GetHashCode();
+            hashCode = hashCode * -1521134295 + Width.GetHashCode();
+            hashCode = hashCode * -1521134295 + Rotation.GetHashCode();
+            hashCode = hashCode * -1521134295 + Center.GetHashCode();
             return hashCode;
         }
 
         public override bool Equals(object obj)
         {
             return obj is Ellipse ellipse &&
-                   Area == ellipse.Area &&
-                   EqualityComparer<Vector2>.Default.Equals(_center, ellipse._center) &&
-                   EqualityComparer<Angle>.Default.Equals(_rotation, ellipse._rotation) &&
-                   height == ellipse.height &&
-                   width == ellipse.width;
+                   EqualityComparer<Vector2>.Default.Equals(Center, ellipse.Center) &&
+                   EqualityComparer<Angle>.Default.Equals(Rotation, ellipse.Rotation) &&
+                   Height.CloseTo(ellipse.Height) &&
+                   Width.CloseTo(ellipse.Width);
         }
     }
 }

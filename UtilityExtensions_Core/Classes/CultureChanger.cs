@@ -8,7 +8,7 @@ using System.Threading;
 namespace UtilityExtensions_Core.Classes
 {
     /// <summary>
-    /// Upon instantiation, changes the current thread's culture to the new culture, reverting it on dispose.
+    /// Used to change the current thread's culture to a new culture, reverting it on dispose.
     /// </summary>
     public class CultureChanger : IDisposable
     {
