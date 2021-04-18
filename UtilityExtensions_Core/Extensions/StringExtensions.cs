@@ -9,11 +9,11 @@ namespace CSharpUtilityExtensions.Extensions
     public static class StringExtensions
     {
         /// <summary>
-        /// If the value is higher than 1, returns a new string with the suffix.
+        /// If the value is higher than 1 or equal to 0, returns a new string with the suffix.
         /// </summary>
         public static string Plural(this string str, int value, string suffix = "s")
         {
-            if (value > 1)
+            if (Math.Abs(value) != 1)
                 return str += suffix;
 
             return str;
@@ -109,7 +109,7 @@ namespace CSharpUtilityExtensions.Extensions
         /// <returns> </returns>
         public static string IfEmpty(this string s, string replacement)
         {
-            return string.IsNullOrEmpty(s) ? replacement : s;
+            return string.IsNullOrEmpty(s?.Trim()) ? replacement : s;
         }
 
         public static string RemoveLineEndings(this string str)

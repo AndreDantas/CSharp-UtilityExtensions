@@ -5,14 +5,12 @@ namespace CSharpUtilityExtensions.Classes.Geometry
 {
     public struct Line
     {
-        private Vector2 _start;
-        public Vector2 start { get => _start; private set => _start = value; }
+        public Vector2 start;
 
-        private Vector2 _end;
-        public Vector2 end { get => _end; private set => _end = value; }
+        public Vector2 end;
 
         /// <summary>
-        /// Returns a point that belong to the line, where t = 0 returns the start point and t = 1
+        /// Returns a point that belongs to the line. When t = 0, returns the start point and t = 1
         /// returns the end point
         /// </summary>
         /// <param name="by"> </param>

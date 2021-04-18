@@ -8,70 +8,69 @@ namespace CSharpUtilityExtensions.Classes
         private double _time;
         private double _counter;
 
-        public double counter { get => _counter; private set => _counter = Math.Min(Math.Max(_counter, 0), time); }
+        public double Counter { get => _counter; private set => _counter = MathExtensions.Clamp(value, 0, Time); }
 
-        public bool isFinished { get; private set; }
+        public bool IsFinished { get; private set; }
 
-        public double time
+        public double Time
         {
             get => _time;
 
             set => _time = Math.Max(value, 0);
         }
 
-        public Timer()
+        private Timer()
         {
         }
 
         public Timer(double time) : this()
         {
-            this._time = Math.Max(time, 0);
-            counter = 0;
-            isFinished = false;
+            Time = time;
+            Counter = 0;
+            IsFinished = false;
         }
 
         public bool Update(double step)
         {
-            if (isFinished)
+            if (IsFinished)
             {
-                counter = time;
+                Counter = Time;
                 return true;
             }
-            counter += step;
-            if (counter >= time)
+            Counter += step;
+            if (Counter >= Time)
             {
-                isFinished = true;
-                counter = time;
+                IsFinished = true;
+                Counter = Time;
             }
             else
-                isFinished = false;
+                IsFinished = false;
 
-            return isFinished;
+            return IsFinished;
         }
 
         public bool Reverse(double step)
         {
-            if (isFinished)
+            if (IsFinished)
             {
-                isFinished = false;
+                IsFinished = false;
             }
 
-            counter -= step;
-            counter = Math.Max(counter, 0f);
+            Counter -= step;
 
-            return counter.CloseTo(0f);
+            return Counter.CloseTo(0f);
         }
 
         public void Reset()
         {
-            counter = 0f;
-            isFinished = false;
+            Counter = 0f;
+            IsFinished = false;
         }
 
         public void Finish()
         {
-            counter = time;
-            isFinished = true;
+            Counter = Time;
+            IsFinished = true;
         }
     }
 }

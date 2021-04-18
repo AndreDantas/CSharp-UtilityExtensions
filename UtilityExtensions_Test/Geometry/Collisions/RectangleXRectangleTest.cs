@@ -48,7 +48,6 @@ namespace UtilityExtensions_Test.Geometry.Collisions
         {
             var rect1 = new Rectangle { Width = 7, Height = 1, Center = new Vector2() };
             var rect2 = new Rectangle { Width = 7, Height = 1, Rotation = 45, Center = new Vector2(0, 3) };
-
             Assert.IsTrue(col.CheckCollision(rect1, rect2));
         }
     }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CSharpUtilityExtensions.Extensions;
+using System;
 
 namespace CSharpUtilityExtensions.Classes
 {
@@ -8,36 +9,48 @@ namespace CSharpUtilityExtensions.Classes
         private double _max;
         private double _value;
 
-        public double min { get => _min; set => _min = Math.Min(value, max); }
-        public double max { get => _max; set => _max = Math.Max(value, min); }
-        public double value { get => Math.Min(Math.Max(_value, min), max); set => this._value = Math.Min(Math.Max(value, min), max); }
+        public double Min { get => _min; set => _min = Math.Min(value, Max); }
+        public double Max { get => _max; set => _max = Math.Max(value, Min); }
+        public double Value { get => _value; set => _value = MathExtensions.Clamp(value, Min, Max); }
 
-        public Range(double min, double value, double max) : this()
+        public Range(double value, double min, double max)
         {
-            this.min = min;
-            this.max = max;
-            this.value = value;
-        }
-
-        public Range(double min, double max) : this()
-        {
-            this.min = min;
-            this.max = max;
-        }
-
-        public override bool Equals(object obj)
-        {
-            return base.Equals(obj);
-        }
-
-        public override int GetHashCode()
-        {
-            return base.GetHashCode();
+            _min = _max = _value = 0;
+            Value = value;
+            Min = min;
+            Max = max;
         }
 
         public override string ToString()
         {
-            return min + " --{" + value + "}-- " + max;
+            return Min + " --{" + Value + "}-- " + Max;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is Range range &&
+                   Min.CloseTo(range.Min) &&
+                   Max.CloseTo(range.Max) &&
+                   Value.CloseTo(range.Value);
+        }
+
+        public override int GetHashCode()
+        {
+            int hashCode = -944750606;
+            hashCode = hashCode * -1521134295 + Min.GetHashCode();
+            hashCode = hashCode * -1521134295 + Max.GetHashCode();
+            hashCode = hashCode * -1521134295 + Value.GetHashCode();
+            return hashCode;
+        }
+
+        public static bool operator ==(Range left, Range right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(Range left, Range right)
+        {
+            return !(left == right);
         }
     }
 }

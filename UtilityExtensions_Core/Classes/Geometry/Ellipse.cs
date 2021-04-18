@@ -10,7 +10,6 @@ namespace CSharpUtilityExtensions.Classes.Geometry
         public double Width;
         public Angle Rotation;
         public Vector2 Center;
-        public int Resolution = 5;
 
         public override double Area => Math.Abs((Width / 2f) * (Height / 2f) * Math.PI);
         public override Line[] Lines => null;

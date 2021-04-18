@@ -5,29 +5,13 @@ namespace CSharpUtilityExtensions.Classes
 {
     public struct Position
     {
-        private int _x;
-        private int _y;
-        public int x { get => _x; set => _x = value; }
-        public int y { get => _y; set => _y = value; }
+        public int x;
+        public int y;
 
         public Position(int x, int y)
         {
-            _x = 0;
-            _y = 0;
             this.x = x;
             this.y = y;
-        }
-
-        public Position(Position oldPos)
-        {
-            _x = 0;
-            _y = 0;
-
-            if (oldPos == null)
-                return;
-
-            x = oldPos.x;
-            y = oldPos.y;
         }
 
         public static readonly Position Up = new Position(0, 1);
@@ -77,7 +61,7 @@ namespace CSharpUtilityExtensions.Classes
         public override bool Equals(Object obj)
         {
             // If parameter is null return false:
-            if ((object)obj == null || !(obj is Position))
+            if (obj == null || !(obj is Position))
             {
                 return false;
             }
@@ -90,7 +74,7 @@ namespace CSharpUtilityExtensions.Classes
 
         public override string ToString()
         {
-            return "(" + x + "," + y + ")";
+            return $"({x}, {y})";
         }
 
         public override int GetHashCode()

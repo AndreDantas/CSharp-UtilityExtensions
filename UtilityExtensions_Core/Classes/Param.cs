@@ -22,7 +22,7 @@ namespace CSharpUtilityExtensions.Classes
 
             set
             {
-                if (comparer.Equals(this.value, value))
+                if (!comparer.Equals(this.value, value))
                     this.Dirty = true;
                 this.value = value;
             }

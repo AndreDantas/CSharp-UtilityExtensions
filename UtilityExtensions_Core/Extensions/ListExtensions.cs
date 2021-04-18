@@ -170,5 +170,20 @@ namespace CSharpUtilityExtensions.Extensions
             }
             return itemCounts.Values.All(c => c >= 0);
         }
+
+        #region String
+
+        /// <summary>
+        /// Adds the string to this list if it's not empty or null
+        /// </summary>
+        /// <param name="l"> </param>
+        /// <param name="s"> </param>
+        public static void AddIfNotEmpty(this List<string> l, string s)
+        {
+            if (!string.IsNullOrEmpty(s))
+                l.Add(s);
+        }
+
+        #endregion String
     }
 }

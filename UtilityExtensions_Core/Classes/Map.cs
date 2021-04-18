@@ -8,7 +8,7 @@ using UtilityExtensions_Core.Classes;
 
 namespace CSharpUtilityExtensions.Classes
 {
-    public class Map : Dictionary<string, object>
+    public sealed class Map : Dictionary<string, object>
     {
         public override bool Equals(object obj)
         {
@@ -76,7 +76,7 @@ namespace CSharpUtilityExtensions.Classes
             return sr.ToString();
         }
 
-        private class ObjectComparer : IEqualityComparer<object>
+        private class MapObjectComparer : IEqualityComparer<object>
         {
             public new bool Equals(object x, object y)
             {
@@ -105,7 +105,7 @@ namespace CSharpUtilityExtensions.Classes
 
         private static bool CompareIEnumerable(IEnumerable a, IEnumerable b)
         {
-            return ListExtensions.ContainsSequenceIgnoreOrder(a, b, new ObjectComparer());
+            return ListExtensions.ContainsSequenceIgnoreOrder(a, b, new MapObjectComparer());
         }
 
         private static string ConvertObjectToString(object obj)

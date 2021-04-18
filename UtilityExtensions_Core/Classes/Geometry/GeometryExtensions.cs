@@ -1,7 +1,7 @@
+using CSharpUtilityExtensions.Extensions;
 using System;
-using CSharpUtilityExtensions.Classes.Geometry;
 
-namespace CSharpUtilityExtensions.Extensions
+namespace CSharpUtilityExtensions.Classes.Geometry
 {
     public static class GeometryExtensions
     {
@@ -113,7 +113,7 @@ namespace CSharpUtilityExtensions.Extensions
                 return GetPoint(newPoints, by);
             }
 
-            double step = 1f / (numOfCurvePoints.ClampMin(2)-1);
+            double step = 1f / (numOfCurvePoints.ClampMin(2) - 1);
             Vector2[] curvePoints = new Vector2[numOfCurvePoints];
 
             for (int i = 0; i < numOfCurvePoints; i++)
