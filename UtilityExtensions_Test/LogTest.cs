@@ -1,9 +1,6 @@
-﻿using System;
-using System.Data;
-using System.Collections.Generic;
-using System.Text;
-using NUnit.Framework;
-using UtilityExtensions_Core.Classes;
+﻿using NUnit.Framework;
+using System;
+using UtilityExtensions.Core;
 
 namespace UtilityExtensions_Test
 {

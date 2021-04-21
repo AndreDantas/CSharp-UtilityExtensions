@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30523.141
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UtilityExtensions_Core", "UtilityExtensions_Core\UtilityExtensions_Core.csproj", "{1A0B02EC-A1F3-48D7-8D7D-E7F48CFD6BA9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UtilityExtensions", "UtilityExtensions\UtilityExtensions.csproj", "{1A0B02EC-A1F3-48D7-8D7D-E7F48CFD6BA9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UtilityExtensions_Test", "UtilityExtensions_Test\UtilityExtensions_Test.csproj", "{5A0DBBA5-CE52-428C-ABFF-E8060C5673B9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UtilityExtensions_Test", "UtilityExtensions_Test\UtilityExtensions_Test.csproj", "{5A0DBBA5-CE52-428C-ABFF-E8060C5673B9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

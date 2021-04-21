@@ -13,6 +13,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\UtilityExtensions_Core\UtilityExtensions_Core.csproj" />
+    <ProjectReference Include="..\UtilityExtensions\UtilityExtensions.csproj" />
   </ItemGroup>
 </Project>

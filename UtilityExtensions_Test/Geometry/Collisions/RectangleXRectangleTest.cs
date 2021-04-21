@@ -1,11 +1,6 @@
-﻿using System;
-using System.Data;
-using System.Collections.Generic;
-using System.Text;
-using CSharpUtilityExtensions.Classes.Geometry;
-using CSharpUtilityExtensions.Classes.Geometry.Collision;
-using NUnit.Framework;
-using CSharpUtilityExtensions.Extensions;
+﻿using NUnit.Framework;
+using UtilityExtensions.Core.Geometry;
+using UtilityExtensions.Core.Geometry.Collision;
 
 namespace UtilityExtensions_Test.Geometry.Collisions
 {
