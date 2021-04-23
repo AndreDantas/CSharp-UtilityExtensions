@@ -20,7 +20,7 @@ namespace UtilityExtensions_Test
                         .And(string3, nameof(string3))
                         .NotEmpty();
             }
-            catch (Exception e)
+            catch (Exception )
             {
                 Assert.Pass();
             }
@@ -42,7 +42,7 @@ namespace UtilityExtensions_Test
                         .And(string3, nameof(string3))
                         .LongerThan(2);
             }
-            catch (Exception e)
+            catch (Exception )
             {
                 Assert.Pass();
             }

@@ -5,7 +5,13 @@ namespace UtilityExtensions.Core.Transactions
 {
     public sealed class TransactionManager
     {
-        private List<ITransaction> transactions = new List<ITransaction>();
+        private class TransactionHandler
+        {
+            public Transaction transaction;
+            public Action<Transaction> onExecute;
+        }
+
+        private List<TransactionHandler> transactions = new List<TransactionHandler>();
         private bool throwExceptionOnFail;
 
         private TransactionManager()
@@ -17,7 +23,7 @@ namespace UtilityExtensions.Core.Transactions
         /// </summary>
         /// <param name="throwExceptionOnFail"> </param>
         /// <returns> </returns>
-        public static TransactionManager Begin(bool throwExceptionOnFail = true)
+        public static TransactionManager Init(bool throwExceptionOnFail = true)
         {
             return new TransactionManager { throwExceptionOnFail = throwExceptionOnFail };
         }
@@ -26,15 +32,16 @@ namespace UtilityExtensions.Core.Transactions
         /// Adds a transaction to the manager
         /// </summary>
         /// <param name="transaction"> </param>
+        /// <param name="onExecute"> </param>
         /// <returns> </returns>
-        public TransactionManager AddTransaction(ITransaction transaction)
+        public TransactionManager AddTransaction(Transaction transaction, Action<Transaction> onExecute = null)
         {
-            transactions.Add(transaction);
+            transactions.Add(new TransactionHandler { transaction = transaction, onExecute = onExecute });
             return this;
         }
 
         /// <summary>
-        /// Executes all transactions
+        /// Executes all transactions in the order they were added
         /// </summary>
         /// <param name="onExecuteError"> </param>
         /// <param name="onRollbackError"> </param>
@@ -43,37 +50,56 @@ namespace UtilityExtensions.Core.Transactions
             for (int i = 0; i < transactions.Count; i++)
             {
                 var executeTransaction = transactions[i];
-                if (executeTransaction != null)
+                if (executeTransaction.transaction != null)
                 {
                     try
                     {
                         //Try to execute the transaction.
-                        executeTransaction.Execute();
+                        executeTransaction.transaction.Execute();
+                        executeTransaction.onExecute?.Invoke(executeTransaction.transaction);
                     }
                     catch (Exception executeException)
                     {
                         //If a transaction failed, rollback all previous transactions.
-                        for (int j = i - 1; j >= 0; j--)
-                        {
-                            var rollbackTransaction = transactions[i];
-                            try
-                            {
-                                rollbackTransaction.Rollback();
-                            }
-                            catch (Exception rollbackException)
-                            {
-                                try
-                                {
-                                    onRollbackError?.Invoke(new TransactionException($"Transaction {j + 1} ({rollbackTransaction.GetType()}) failed rollback with error: {rollbackException.Message}", rollbackTransaction, rollbackException));
-                                }
-                                catch { }
-                            }
-                        }
-                        var transactionException = new TransactionException($"Transaction {i + 1} ({executeTransaction.GetType()}) failed execution with error: {executeException.Message}", executeTransaction, executeException);
+                        Rollback(onRollbackError);
+
+                        var transactionException = new TransactionException($"Transaction {i + 1} ({executeTransaction.GetType()}) failed execution with error: {executeException.Message}", executeTransaction.transaction, executeException);
 
                         try
                         {
                             onExecuteError?.Invoke(transactionException);
+                        }
+                        catch { }
+
+                        if (throwExceptionOnFail)
+                            throw transactionException;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Rollbacks all transactions in the reverse order they were added
+        /// </summary>
+        /// <param name="onRollbackError"> </param>
+        public void Rollback(Action<TransactionException> onRollbackError = null)
+        {
+            for (int i = transactions.Count - 1; i >= 0; i--)
+            {
+                var rollback = transactions[i];
+                if (rollback.transaction != null)
+                {
+                    try
+                    {
+                        rollback.transaction.Rollback();
+                    }
+                    catch (Exception e)
+                    {
+                        var transactionException = new TransactionException($"Transaction {i + 1} ({rollback.GetType()}) failed rollback with error: {e.Message}", rollback.transaction, e);
+
+                        try
+                        {
+                            onRollbackError?.Invoke(transactionException);
                         }
                         catch { }
 

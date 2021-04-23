@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace UtilityExtensions.Extensions
 {
@@ -7,15 +8,7 @@ namespace UtilityExtensions.Extensions
     {
         public static bool In<T>(this T obj, params T[] collection)
         {
-            if (collection == null)
-                return false;
-
-            for (int i = 0; i < collection.Length; i++)
-            {
-                if (EqualityComparer<T>.Default.Equals(obj, collection[i]))
-                    return true;
-            }
-            return false;
+            return obj.In(null, collection);
         }
 
         public static bool In<T>(this T obj, Func<T, T, bool> comparer, params T[] collection)
