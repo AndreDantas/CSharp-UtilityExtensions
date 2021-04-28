@@ -9,14 +9,14 @@ namespace UtilityExtensions_Test
 {
     public class TransactionTest
     {
-        private class SuccessTransaction : Transaction
+        private class Add10Transaction : Transaction
         {
-            public SuccessTransaction(int value)
+            public int value { get; private set; }
+
+            public Add10Transaction(int value)
             {
                 this.value = value;
             }
-
-            public int value { get; private set; }
 
             protected override void InternalExecute()
             {
@@ -29,29 +29,32 @@ namespace UtilityExtensions_Test
             }
         }
 
-        private class FailTransaction : Transaction
+        private class StringUpperCaseTransaction : Transaction
         {
-            public FailTransaction(string value)
-            {
-                this.value = value;
-            }
+            public string result { get; private set; }
+            public string initial;
 
-            public string value { get; private set; }
+            public StringUpperCaseTransaction(string value)
+            {
+                initial = value;
+                this.result = value;
+            }
 
             protected override void InternalExecute()
             {
-                value = value.ToLower();
+                result = result.ToUpper();
             }
 
             protected override void InternalRollback()
             {
+                result = initial;
             }
         }
 
         [Test]
         public void ExecuteSuccessTransaction()
         {
-            var tran1 = new SuccessTransaction(10);
+            var tran1 = new Add10Transaction(10);
             TransactionManager.Init().AddTransaction(tran1).Execute();
 
             Assert.IsTrue(tran1.value == 20);
@@ -60,29 +63,28 @@ namespace UtilityExtensions_Test
         [Test]
         public void RollbackSuccessTransaction()
         {
-            var tran1 = new SuccessTransaction(10);
+            var tran1 = new Add10Transaction(10);
             var tm = TransactionManager.Init().AddTransaction(tran1);
             tm.Execute();
             tm.Rollback();
 
             Assert.IsTrue(tran1.value == 10);
         }
+
         [Test]
         public void ExecuteFailTransaction()
         {
-            var tran1 = new FailTransaction(null);
+            var tran1 = new StringUpperCaseTransaction(null);
             try
             {
                 TransactionManager.Init().AddTransaction(tran1).Execute();
-
             }
-            catch (TransactionException)
+            catch (TransactionException e)
             {
                 Assert.Pass();
             }
 
             Assert.Fail();
         }
-
     }
 }

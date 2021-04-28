@@ -1,32 +1,44 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using UtilityExtensions.Extensions;
 
 namespace UtilityExtensions.Core.Validations
 {
-    public static class Validate
+    /// <summary>
+    /// Helper class to coordinate validations
+    /// </summary>
+    public static class Validator
     {
         /// <summary>
-        /// Starts the validation chain by creating the Validation object and adding the first value
-        /// to be validated.
+        /// Starts the validation chain by creating the ValidationManager object
         /// </summary>
         /// <typeparam name="T"> </typeparam>
-        /// <param name="value"> </param>
-        /// <param name="paramName"> </param>
         /// <returns> </returns>
-        public static Validation<T> With<T>(T value, string paramName = "")
+        public static ValidationManager<T> Init<T>()
         {
-            return new Validation<T>(value, paramName);
+            return Init(new ValidationManager<T>.Settings { throwExceptionOnFail = true });
         }
 
         /// <summary>
-        /// Adds another value to be validated
+        /// Starts the validation chain by creating the ValidationManager object with settings
+        /// </summary>
+        /// <typeparam name="T"> </typeparam>
+        /// <returns> </returns>
+        public static ValidationManager<T> Init<T>(ValidationManager<T>.Settings settings)
+        {
+            return new ValidationManager<T>(settings);
+        }
+
+        /// <summary>
+        /// Add a value to be validated
         /// </summary>
         /// <typeparam name="T"> </typeparam>
         /// <param name="item"> </param>
         /// <param name="value"> </param>
         /// <param name="paramName"> </param>
         /// <returns> </returns>
-        public static Validation<T> And<T>(this Validation<T> item, T value, string paramName = "")
+        public static ValidationManager<T> Add<T>(this ValidationManager<T> item, T value, string paramName = "")
         {
             item.AddParameter(value, paramName);
 
@@ -34,27 +46,25 @@ namespace UtilityExtensions.Core.Validations
         }
 
         /// <summary>
-        /// Throws a ValidationException
+        /// Validates all parameters with the <paramref name="validationFunc" />
         /// </summary>
         /// <typeparam name="T"> </typeparam>
-        /// <param name="message"> </param>
-        /// <param name="result"> </param>
-        private static void ThrowValidationException<T>(string message, Validation<T>.Result result)
+        /// <param name="item"> </param>
+        /// <param name="validationFunc"> </param>
+        /// <param name="validationError"> </param>
+        private static ValidationManager<T> Validate<T>(ValidationManager<T> item, Func<T, bool> validationFunc, string validationError)
         {
-            throw new ValidationException(message, result.paramName, result.exception);
+            item.ValidateAll(new ValidationManager<T>.Validation(validationFunc, validationError));
+
+            return item;
         }
 
         #region Generic
 
         [DebuggerHidden]
-        public static Validation<T> NotNull<T>(this Validation<T> item) where T : class
+        public static ValidationManager<T> NotNull<T>(this ValidationManager<T> item) where T : class
         {
-            var result = item.ValidateAll((v) => v != null);
-
-            if (!result.IsSuccess)
-                ThrowValidationException($"Parameter {result.paramName} can't be null", result);
-
-            return item;
+            return Validate(item, (v) => v != null, "can't be null");
         }
 
         #endregion Generic
@@ -62,91 +72,51 @@ namespace UtilityExtensions.Core.Validations
         #region String
 
         [DebuggerHidden]
-        public static Validation<string> ShorterThan(this Validation<string> item, int max)
+        public static ValidationManager<string> ShorterThan(this ValidationManager<string> item, int max)
         {
-            var result = item.ValidateAll((v) => v.Length < max);
-
-            if (!result.IsSuccess)
-                ThrowValidationException($"Parameter {result.paramName} must be shorter than {max} chars", result);
-
-            return item;
+            return Validate(item, (v) => v.Length < max, $"must be shorter than {max} chars");
         }
 
         [DebuggerHidden]
-        public static Validation<string> LongerThan(this Validation<string> item, int min)
+        public static ValidationManager<string> LongerThan(this ValidationManager<string> item, int min)
         {
-            var result = item.ValidateAll((v) => v.Length > min);
-
-            if (!result.IsSuccess)
-                ThrowValidationException($"Parameter {result.paramName} must be longer than {min} chars", result);
-
-            return item;
+            return Validate(item, (v) => v.Length > min, $"must be longer than {min} chars");
         }
 
         [DebuggerHidden]
-        public static Validation<string> HasLength(this Validation<string> item, int length)
+        public static ValidationManager<string> HasLength(this ValidationManager<string> item, int length)
         {
-            var result = item.ValidateAll((v) => v.Length == length);
-
-            if (!result.IsSuccess)
-                ThrowValidationException($"Parameter {result.paramName} must have a length of {length} chars", result);
-
-            return item;
+            return Validate(item, (v) => v.Length == length, $"must have a length of {length} chars");
         }
 
         [DebuggerHidden]
-        public static Validation<string> StartsWith(this Validation<string> item, string pattern)
+        public static ValidationManager<string> StartsWith(this ValidationManager<string> item, string pattern)
         {
-            var result = item.ValidateAll((v) => v.StartsWith(pattern));
-
-            if (!result.IsSuccess)
-                ThrowValidationException($"Parameter {result.paramName} must start with '{pattern}'", result);
-
-            return item;
+            return Validate(item, (v) => v.StartsWith(pattern), $"must start with '{pattern}'");
         }
 
         [DebuggerHidden]
-        public static Validation<string> EndsWith(this Validation<string> item, string pattern)
+        public static ValidationManager<string> EndsWith(this ValidationManager<string> item, string pattern)
         {
-            var result = item.ValidateAll((v) => v.EndsWith(pattern));
-
-            if (!result.IsSuccess)
-                ThrowValidationException($"Parameter {result.paramName} must end with '{pattern}'", result);
-
-            return item;
+            return Validate(item, (v) => v.EndsWith(pattern), $"must end with '{pattern}'");
         }
 
         [DebuggerHidden]
-        public static Validation<string> NotEmpty(this Validation<string> item)
+        public static ValidationManager<string> NotEmpty(this ValidationManager<string> item)
         {
-            var result = item.ValidateAll((v) => !string.IsNullOrEmpty(v));
-
-            if (!result.IsSuccess)
-                ThrowValidationException($"Parameter {result.paramName} must not be empty", result);
-
-            return item;
+            return Validate(item, (v) => !string.IsNullOrEmpty(v), "must not be empty");
         }
 
         [DebuggerHidden]
-        public static Validation<string> DigitsOnly(this Validation<string> item)
+        public static ValidationManager<string> DigitsOnly(this ValidationManager<string> item)
         {
-            var result = item.ValidateAll((v) => v.IsDigitsOnly());
-
-            if (!result.IsSuccess)
-                ThrowValidationException($"Parameter {result.paramName} must only have digits", result);
-
-            return item;
+            return Validate(item, (v) => v.IsDigitsOnly(), "must only have digits");
         }
 
         [DebuggerHidden]
-        public static Validation<string> ValidEmail(this Validation<string> item)
+        public static ValidationManager<string> ValidEmail(this ValidationManager<string> item)
         {
-            var result = item.ValidateAll((v) => v.IsValidEmail());
-
-            if (!result.IsSuccess)
-                ThrowValidationException($"Parameter {result.paramName} must only have digits", result);
-
-            return item;
+            return Validate(item, (v) => v.IsValidEmail(), "must only have digits");
         }
 
         #endregion String
@@ -154,47 +124,27 @@ namespace UtilityExtensions.Core.Validations
         #region Int
 
         [DebuggerHidden]
-        public static Validation<int> InRange(this Validation<int> item, int min, int max)
+        public static ValidationManager<int> InRange(this ValidationManager<int> item, int min, int max)
         {
-            var result = item.ValidateAll((v) => v >= min && v <= max);
-
-            if (!result.IsSuccess)
-                ThrowValidationException($"Parameter {result.paramName} must be between {min} and {max}", result);
-
-            return item;
+            return Validate(item, (v) => v >= min && v <= max, $"must be between {min} and {max}");
         }
 
         [DebuggerHidden]
-        public static Validation<int> LessThan(this Validation<int> item, int max)
+        public static ValidationManager<int> LessThan(this ValidationManager<int> item, int max)
         {
-            var result = item.ValidateAll((v) => v < max);
-
-            if (!result.IsSuccess)
-                ThrowValidationException($"Parameter {result.paramName} must be less than {max}", result);
-
-            return item;
+            return Validate(item, (v) => v < max, $"must be less than {max}");
         }
 
         [DebuggerHidden]
-        public static Validation<int> GreaterThan(this Validation<int> item, int min)
+        public static ValidationManager<int> GreaterThan(this ValidationManager<int> item, int min)
         {
-            var result = item.ValidateAll((v) => v > min);
-
-            if (!result.IsSuccess)
-                ThrowValidationException($"Parameter {result.paramName} must be greater than {min}", result);
-
-            return item;
+            return Validate(item, (v) => v > min, $"must be greater than {min}");
         }
 
         [DebuggerHidden]
-        public static Validation<int> EqualTo(this Validation<int> item, int target)
+        public static ValidationManager<int> EqualTo(this ValidationManager<int> item, int target)
         {
-            var result = item.ValidateAll((v) => v == target);
-
-            if (!result.IsSuccess)
-                ThrowValidationException($"Parameter {result.paramName} must be equal to {target}", result);
-
-            return item;
+            return Validate(item, (v) => v == target, $"must be equal to {target}");
         }
 
         #endregion Int
@@ -202,49 +152,39 @@ namespace UtilityExtensions.Core.Validations
         #region Decimal
 
         [DebuggerHidden]
-        public static Validation<decimal> InRange(this Validation<decimal> item, decimal min, decimal max)
+        public static ValidationManager<decimal> InRange(this ValidationManager<decimal> item, decimal min, decimal max)
         {
-            var result = item.ValidateAll((v) => v >= min && v <= max);
-
-            if (!result.IsSuccess)
-                ThrowValidationException($"Parameter {result.paramName} must be between {min} and {max}", result);
-
-            return item;
+            return Validate(item, (v) => v >= min && v <= max, $"must be between {min} and {max}");
         }
 
         [DebuggerHidden]
-        public static Validation<decimal> LessThan(this Validation<decimal> item, decimal max)
+        public static ValidationManager<decimal> LessThan(this ValidationManager<decimal> item, decimal max)
         {
-            var result = item.ValidateAll((v) => v < max);
-
-            if (!result.IsSuccess)
-                ThrowValidationException($"Parameter {result.paramName} must be less than {max}", result);
-
-            return item;
+            return Validate(item, (v) => v < max, $"must be less than {max}");
         }
 
         [DebuggerHidden]
-        public static Validation<decimal> GreaterThan(this Validation<decimal> item, decimal min)
+        public static ValidationManager<decimal> GreaterThan(this ValidationManager<decimal> item, decimal min)
         {
-            var result = item.ValidateAll((v) => v > min);
-
-            if (!result.IsSuccess)
-                ThrowValidationException($"Parameter {result.paramName} must be greater than {min}", result);
-
-            return item;
+            return Validate(item, (v) => v > min, $"must be greater than {min}");
         }
 
         [DebuggerHidden]
-        public static Validation<decimal> EqualTo(this Validation<decimal> item, decimal target)
+        public static ValidationManager<decimal> EqualTo(this ValidationManager<decimal> item, decimal target)
         {
-            var result = item.ValidateAll((v) => v == target);
-
-            if (!result.IsSuccess)
-                ThrowValidationException($"Parameter {result.paramName} must be equal to {target}", result);
-
-            return item;
+            return Validate(item, (v) => v == target, $"must be equal to {target}");
         }
 
         #endregion Decimal
+
+        #region List
+
+        [DebuggerHidden]
+        public static ValidationManager<List<T>> NotEmpty<T>(this ValidationManager<List<T>> item)
+        {
+            return Validate(item, (v) => !v?.IsEmpty() ?? false, "must not be empty");
+        }
+
+        #endregion List
     }
 }
