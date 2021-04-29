@@ -60,5 +60,13 @@ namespace UtilityExtensions.Core.Geometry
                    Height.CloseTo(ellipse.Height) &&
                    Width.CloseTo(ellipse.Width);
         }
+
+        private Vector2 getPointFromAngle(Angle angle)
+        {
+            double ePX = (Center.x + Width) + (int)(Width * Math.Cos(angle.Rad));
+            double ePY = (Center.y + Height) + (int)(Height * -Math.Sin(angle.Rad));
+
+            return Vector2.RotateVector(new Vector2(ePX, ePY), Center, Rotation);
+        }
     }
 }

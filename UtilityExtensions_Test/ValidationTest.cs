@@ -16,11 +16,10 @@ namespace UtilityExtensions_Test
                 var string2 = "321";
                 var string3 = "";
 
-                Validator.Init<string>()
-                        .Add(string1, nameof(string1))
-                        .Add(string2, nameof(string2))
-                        .Add(string3, nameof(string3))
-                        .NotEmpty();
+                Validation<string>.Add(string1, nameof(string1))
+                                  .Add(string2, nameof(string2))
+                                  .Add(string3, nameof(string3))
+                                  .NotEmpty();
             }
             catch (Exception)
             {
@@ -39,11 +38,11 @@ namespace UtilityExtensions_Test
                 var string2 = "321";
                 var string3 = "12";
 
-                Validator.Init<string>()
-                        .Add(string1, nameof(string1))
-                        .Add(string2, nameof(string2))
-                        .Add(string3, nameof(string3))
-                        .LongerThan(2);
+                Validation<string>.UseSettings(new Validation.Settings { throwExceptionOnFail = true })
+                                  .Add(string1, nameof(string1))
+                                  .Add(string2, nameof(string2))
+                                  .Add(string3, nameof(string3))
+                                  .LongerThan(2);
             }
             catch (Exception)
             {

@@ -3,13 +3,31 @@ using System.Collections.Generic;
 
 namespace UtilityExtensions.Core.Validations
 {
-    public class ValidationManager<T>
+    public abstract class Validation
     {
         public struct Settings
         {
             public bool throwExceptionOnFail;
         }
 
+        public struct Result
+        {
+            public enum State
+            {
+                Success,
+                Failed,
+                Exception
+            }
+
+            public bool IsSuccess => state == State.Success;
+            public string paramName;
+            public State state;
+            public Exception exception;
+        }
+    }
+
+    public class Validation<T> : Validation
+    {
         public class Parameter
         {
             public T Value { get; set; }
@@ -29,56 +47,56 @@ namespace UtilityExtensions.Core.Validations
             }
         }
 
-        public struct Result
+        public struct Method
         {
-            public enum State
-            {
-                Success,
-                Failed,
-                Exception
-            }
-
-            public bool IsSuccess => state == State.Success;
-            public string paramName;
-            public State state;
-            public Exception exception;
-        }
-
-        public struct Validation
-        {
-            public Func<T, bool> function;
+            public Func<T, bool> execute;
             public string onFailError;
 
-            public Validation(Func<T, bool> function, string onFailError)
+            public Method(Func<T, bool> function, string onFailError)
             {
-                this.function = function;
+                this.execute = function;
                 this.onFailError = onFailError;
             }
         }
 
-        public Settings settings { get; private set; }
-        private List<Parameter> parameters = new List<Parameter>();
+        public Settings settings { get; protected set; }
+        protected List<Parameter> parameters = new List<Parameter>();
 
         public IReadOnlyCollection<Parameter> Parameters => parameters.AsReadOnly();
 
-        public ValidationManager(Settings settings)
+        protected Validation()
+        {
+        }
+
+        protected Validation(Settings settings)
         {
             this.settings = settings;
         }
 
-        public ValidationManager(T value, string paramName)
+        /// <summary>
+        /// Starts the validation chain by creating the ValidationManager object with settings
+        /// </summary>
+        /// <typeparam name="T"> </typeparam>
+        /// <returns> </returns>
+        public static Validation<T> UseSettings(Settings settings)
         {
-            AddParameter(value, paramName);
+            return new Validation<T>(settings);
         }
 
         /// <summary>
-        /// Adds a new parameter to this ValidationManager
+        /// Adds a value to be validated
         /// </summary>
+        /// <typeparam name="T"> </typeparam>
+        /// <param name="item"> </param>
         /// <param name="value"> </param>
         /// <param name="paramName"> </param>
-        public virtual void AddParameter(T value, string paramName)
+        /// <returns> </returns>
+        public static Validation<T> Add(T value, string paramName = "")
         {
-            parameters.Add(new Parameter(value, paramName));
+            var v = new Validation<T>(new Settings { throwExceptionOnFail = true });
+            v.parameters.Add(new Parameter(value, paramName));
+
+            return v;
         }
 
         /// <summary>
@@ -109,9 +127,9 @@ namespace UtilityExtensions.Core.Validations
         /// Validates all parameters
         /// </summary>
         /// <returns> </returns>
-        public virtual Result[] ValidateAll(Validation validation)
+        public virtual Result[] ValidateAll(Method method)
         {
-            if (validation.function == null)
+            if (method.execute == null)
                 return null;
 
             Result[] results = new Result[parameters.Count];
@@ -123,7 +141,7 @@ namespace UtilityExtensions.Core.Validations
                 result.paramName = param.Name;
                 try
                 {
-                    if (!validation.function(param.Value))
+                    if (!method.execute(param.Value))
                         result.state = Result.State.Failed;
                 }
                 catch (Exception e)
@@ -133,7 +151,7 @@ namespace UtilityExtensions.Core.Validations
                 }
 
                 if (!result.IsSuccess && settings.throwExceptionOnFail)
-                    ThrowValidationException(validation, result);
+                    ThrowValidationException(method, result);
 
                 param.AddResult(result);
                 results[i] = result;
@@ -148,9 +166,9 @@ namespace UtilityExtensions.Core.Validations
         /// <typeparam name="T"> </typeparam>
         /// <param name="message"> </param>
         /// <param name="result"> </param>
-        private static void ThrowValidationException(Validation validation, Result result)
+        protected virtual void ThrowValidationException(Method method, Result result)
         {
-            throw new ValidationException($"Parameter {result.paramName} failed validation: {validation.onFailError}", result.paramName, validation.onFailError, result.exception);
+            throw new ValidationException($"Parameter {result.paramName} failed validation: {method.onFailError}", result.paramName, method.onFailError, result.exception);
         }
     }
 }
