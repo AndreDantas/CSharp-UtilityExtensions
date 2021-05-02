@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.CompilerServices;
 
 namespace UtilityExtensions.Core
 {
@@ -35,17 +36,19 @@ namespace UtilityExtensions.Core
             MethodName = 4,
 
             /// <summary>
-            /// Show the line and column number where the exception happened
+            /// Show the line number where the exception happened
             /// </summary>
-            LineAndColumn = 8,
+            Line = 8,
 
             /// <summary>
             /// Show all information
             /// </summary>
-            All = FileName | ExceptionType | MethodName | LineAndColumn
+            All = FileName | ExceptionType | MethodName | Line
         }
 
-        public static string Exception(Exception e, ExceptionFlags flags = ExceptionFlags.All)
+        public static string Exception(Exception e,
+                                       ExceptionFlags flags = ExceptionFlags.All,
+                                       [CallerFilePath] string path = "")
         {
             if (e == null)
                 return "";
@@ -60,7 +63,7 @@ namespace UtilityExtensions.Core
             if (flags.HasFlag(ExceptionFlags.FileName))
             {
                 //Get the file name
-                string fileName = Path.GetFileName(frame.GetFileName());
+                string fileName = Path.GetFileName(path);
 
                 if (!string.IsNullOrEmpty(fileName))
                     namesList.Add(fileName);
@@ -92,19 +95,16 @@ namespace UtilityExtensions.Core
                 concatString = string.Join(" - ", namesList) + ": ";
             }
 
-            string lineAndCol = "";
-            if (flags.HasFlag(ExceptionFlags.LineAndColumn))
+            string lineNumber = "";
+            if (flags.HasFlag(ExceptionFlags.Line))
             {
                 //Get the line number
                 int line = frame.GetFileLineNumber();
 
-                //Get the column number
-                int col = frame.GetFileColumnNumber();
-
-                lineAndCol = $" at line {line} col {col}";
+                lineNumber = $" at line {line}";
             }
 
-            return $"{concatString}'{e.Message}'{lineAndCol}";
+            return $"{concatString}'{e.Message}'{lineNumber}";
         }
     }
 }

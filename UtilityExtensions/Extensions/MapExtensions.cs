@@ -52,20 +52,5 @@ namespace UtilityExtensions.Extensions
 
             return obj;
         }
-
-        public static object GetIndexedPropertyValues(PropertyInfo prop, object target)
-        {
-            if (prop == null || target == null)
-                return null;
-
-            int length = prop.GetIndexParameters().Length;
-            var objects = new object[length];
-            for (int i = 0; i < length; i++)
-            {
-                objects[i] = prop.GetValue(target, new object[] { i });
-            }
-
-            return objects;
-        }
     }
 }

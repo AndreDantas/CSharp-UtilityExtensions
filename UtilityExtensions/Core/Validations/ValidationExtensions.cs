@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using UtilityExtensions.Extensions;
 
 namespace UtilityExtensions.Core.Validations
@@ -20,7 +21,7 @@ namespace UtilityExtensions.Core.Validations
         /// <returns> </returns>
         public static Validation<T> Add<T>(this Validation<T> item, T value, string paramName = "")
         {
-            item.Add(value, paramName);
+            item.AddParameter(value, paramName);
 
             return item;
         }
@@ -32,9 +33,9 @@ namespace UtilityExtensions.Core.Validations
         /// <param name="item"> </param>
         /// <param name="validationFunc"> </param>
         /// <param name="validationError"> </param>
-        private static Validation<T> Validate<T>(Validation<T> item, Func<T, bool> validationFunc, string validationError)
+        private static Validation<T> Validate<T>(Validation<T> item, Func<T, bool> validationFunc, string validationError, [CallerMemberName] string validationName = "")
         {
-            item.ValidateAll(new Validation<T>.Method(validationFunc, validationError));
+            item.ValidateAll(new Validation<T>.Method(validationFunc, validationError, validationName));
 
             return item;
         }

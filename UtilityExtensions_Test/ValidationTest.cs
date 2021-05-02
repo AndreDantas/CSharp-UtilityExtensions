@@ -42,6 +42,7 @@ namespace UtilityExtensions_Test
                                   .Add(string1, nameof(string1))
                                   .Add(string2, nameof(string2))
                                   .Add(string3, nameof(string3))
+                                  .ShorterThan(4)
                                   .LongerThan(2);
             }
             catch (Exception)

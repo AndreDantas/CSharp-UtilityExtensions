@@ -103,7 +103,7 @@ namespace UtilityExtensions.Core
 
         private static bool CompareIEnumerable(IEnumerable a, IEnumerable b)
         {
-            return ListExtensions.ContainsSequenceIgnoreOrder(a, b, new MapObjectComparer());
+            return ListExtensions.EqualsSequenceIgnoreOrder(a, b, new MapObjectComparer());
         }
 
         private static string ConvertObjectToString(object obj)

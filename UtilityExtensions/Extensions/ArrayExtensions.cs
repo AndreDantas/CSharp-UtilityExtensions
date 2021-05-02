@@ -10,7 +10,7 @@ namespace UtilityExtensions.Extensions
         /// <typeparam name="T"> The object Type. </typeparam>
         /// <param name="twoDimensionalArray"> </param>
         /// <returns> </returns>
-        public static List<T> GetItems<T>(this T[,] twoDimensionalArray)
+        public static List<T> ToList<T>(this T[,] twoDimensionalArray)
         {
             if (twoDimensionalArray == null)
                 return null;
@@ -96,10 +96,12 @@ namespace UtilityExtensions.Extensions
             return matrix.RotateMatrix90R().RotateMatrix90R();
         }
 
-        public static bool Check2DArray<T>(this T[,] data, T[,] find) where T : class
+        public static bool Check2DArray<T>(this T[,] data, T[,] find, EqualityComparer<T> comparer = null)
         {
             if (data == null || find == null)
                 return false;
+            if (comparer == null)
+                comparer = EqualityComparer<T>.Default;
             int dataLen = data.Length; // length of the whole data
             int findLen = find.Length; // length of the whole find
 
@@ -127,7 +129,7 @@ namespace UtilityExtensions.Extensions
                     }
 
                     // we are still inside of the data boundries so check if values matches
-                    okay = data[dataY + findY, dataX + findX] == find[findY, findX]; // check if it matches
+                    okay = comparer.Equals(data[dataY + findY, dataX + findX], find[findY, findX]); // check if it matches
                 }
                 if (okay) // if all values from both fragments are equal
                     return true; // return true

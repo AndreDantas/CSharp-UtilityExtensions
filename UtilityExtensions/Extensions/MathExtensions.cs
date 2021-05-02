@@ -50,9 +50,9 @@ namespace UtilityExtensions.Extensions
             return value;
         }
 
-        public static double ReversePercentage(double finalValue, double percentAdded)
+        public static double RevertPercentage(this double value, double percentageAdded)
         {
-            return (finalValue * 100) / (percentAdded + 100);
+            return (value * 100) / (percentageAdded + 100);
         }
 
         /// <summary>
@@ -65,11 +65,11 @@ namespace UtilityExtensions.Extensions
             return (Math.PI / 180) * angle;
         }
 
-        public static double Map(double OldMin, double OldMax, double NewMin, double NewMax, double OldValue)
+        public static double Map(this double value, double OldMin, double OldMax, double NewMin, double NewMax)
         {
             double OldRange = (OldMax - OldMin);
             double NewRange = (NewMax - NewMin);
-            double NewValue = (((OldValue - OldMin) * NewRange) / OldRange) + NewMin;
+            double NewValue = (((value - OldMin) * NewRange) / OldRange) + NewMin;
 
             return (NewValue);
         }
@@ -90,12 +90,12 @@ namespace UtilityExtensions.Extensions
             return value * Math.Pow(10, -1 * precision);
         }
 
-        public static double RoundUp(double value, int precision)
+        public static double RoundUp(this double value, int precision)
         {
             return Round(value, precision, RoundingDirection.Up);
         }
 
-        public static double RoundDown(double value, int precision)
+        public static double RoundDown(this double value, int precision)
         {
             return Round(value, precision, RoundingDirection.Down);
         }
@@ -129,9 +129,9 @@ namespace UtilityExtensions.Extensions
             }
         }
 
-        public static double Lerp(double first, double second, double by)
+        public static double Lerp(this double value, double to, double by)
         {
-            return first * (1 - by) + second * by;
+            return value * (1 - by) + to * by;
         }
     }
 }

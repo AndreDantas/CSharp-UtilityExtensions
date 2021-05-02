@@ -4,28 +4,32 @@
     {
         public enum State
         {
-            Start,
+            Pending,
             Finished
         }
 
-        public State state { get; private set; } = State.Start;
+        public State state { get; private set; } = State.Pending;
 
-        public void Execute()
+        public bool Execute()
         {
-            if (state == State.Start)
+            if (state == State.Pending)
             {
                 InternalExecute();
                 state = State.Finished;
+                return true;
             }
+            return false;
         }
 
-        public void Rollback()
+        public bool Rollback()
         {
             if (state == State.Finished)
             {
                 InternalRollback();
-                state = State.Start;
+                state = State.Pending;
+                return true;
             }
+            return false;
         }
 
         protected abstract void InternalExecute();

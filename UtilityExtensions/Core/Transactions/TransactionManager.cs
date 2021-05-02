@@ -5,11 +5,20 @@ namespace UtilityExtensions.Core.Transactions
 {
     public sealed class TransactionManager
     {
-        private class TransactionHandler
+        public class TransactionHandler
         {
+            public int Order { get; private set; }
             public Transaction transaction;
             public Action<Transaction> onExecute;
             public Action<Transaction> onRollback;
+
+            public TransactionHandler(int order, Transaction transaction, Action<Transaction> onExecute, Action<Transaction> onRollback)
+            {
+                this.Order = order;
+                this.transaction = transaction;
+                this.onExecute = onExecute;
+                this.onRollback = onRollback;
+            }
         }
 
         public struct Settings
@@ -23,6 +32,7 @@ namespace UtilityExtensions.Core.Transactions
         public static readonly Settings DEFAULT = new Settings { throwExceptionOnFail = true, rollbackOnError = true };
 
         private List<TransactionHandler> transactions = new List<TransactionHandler>();
+        public IReadOnlyCollection<TransactionHandler> Transactions => transactions.AsReadOnly();
         private Settings settings;
 
         private TransactionManager()
@@ -30,35 +40,38 @@ namespace UtilityExtensions.Core.Transactions
         }
 
         /// <summary>
-        /// Initiates the transaction manager with default settings
-        /// </summary>
-        /// <returns> </returns>
-        public static TransactionManager Init()
-        {
-            return Init(DEFAULT);
-        }
-
-        /// <summary>
-        /// Initiates the transaction manager
+        /// Initiates the transaction manager with settings
         /// </summary>
         /// <param name="settings"> </param>
         /// <returns> </returns>
-        public static TransactionManager Init(Settings settings)
+        public static TransactionManager UseSettings(Settings settings)
         {
             return new TransactionManager { settings = settings };
         }
 
         /// <summary>
-        /// Adds a transaction to the manager
+        /// Initiates the transaction manager with default settings and adds the first transaction
         /// </summary>
         /// <param name="transaction"> </param>
         /// <param name="onExecuteTransaction"> </param>
         /// <param name="onRollbackTransaction"> </param>
         /// <returns> </returns>
-        public TransactionManager AddTransaction(Transaction transaction, Action<Transaction> onExecuteTransaction = null, Action<Transaction> onRollbackTransaction = null)
+        public static TransactionManager Add(Transaction transaction, Action<Transaction> onExecuteTransaction = null, Action<Transaction> onRollbackTransaction = null)
         {
-            transactions.Add(new TransactionHandler { transaction = transaction, onExecute = onExecuteTransaction, onRollback = onRollbackTransaction });
-            return this;
+            TransactionManager m = new TransactionManager { settings = DEFAULT };
+            m.AddTransaction(transaction, onExecuteTransaction, onRollbackTransaction);
+            return m;
+        }
+
+        /// <summary>
+        /// Adds a transaction
+        /// </summary>
+        /// <param name="transaction"> </param>
+        /// <param name="onExecuteTransaction"> </param>
+        /// <param name="onRollbackTransaction"> </param>
+        public void AddTransaction(Transaction transaction, Action<Transaction> onExecuteTransaction = null, Action<Transaction> onRollbackTransaction = null)
+        {
+            transactions.Add(new TransactionHandler(transactions.Count +1 , transaction, onExecuteTransaction, onRollbackTransaction));
         }
 
         /// <summary>
@@ -68,18 +81,18 @@ namespace UtilityExtensions.Core.Transactions
         {
             for (int i = 0; i < transactions.Count; i++)
             {
-                var execute = transactions[i];
-                if (execute.transaction != null)
+                var handler = transactions[i];
+                if (handler.transaction != null)
                 {
                     try
                     {
                         //Try to execute the transaction.
-                        execute.transaction.Execute();
-                        try
-                        {
-                            execute.onExecute?.Invoke(execute.transaction);
-                        }
-                        catch { }
+                        if (handler.transaction.Execute())
+                            try
+                            {
+                                handler.onExecute?.Invoke(handler.transaction);
+                            }
+                            catch { }
                     }
                     catch (Exception e)
                     {
@@ -87,7 +100,7 @@ namespace UtilityExtensions.Core.Transactions
                         if (settings.rollbackOnError)
                             Rollback();
 
-                        var transactionException = new TransactionException($"Transaction {i + 1} ({execute.transaction.GetType()}) failed execution with error: {e.Message}", execute.transaction, e);
+                        var transactionException = GetTransactionException(handler, e);
 
                         try
                         {
@@ -109,22 +122,22 @@ namespace UtilityExtensions.Core.Transactions
         {
             for (int i = transactions.Count - 1; i >= 0; i--)
             {
-                var rollback = transactions[i];
-                if (rollback.transaction != null)
+                var handler = transactions[i];
+                if (handler.transaction != null)
                 {
                     try
                     {
                         //Try to rollback the transaction.
-                        rollback.transaction.Rollback();
-                        try
-                        {
-                            rollback.onRollback?.Invoke(rollback.transaction);
-                        }
-                        catch { }
+                        if (handler.transaction.Rollback())
+                            try
+                            {
+                                handler.onRollback?.Invoke(handler.transaction);
+                            }
+                            catch { }
                     }
                     catch (Exception e)
                     {
-                        var transactionException = new TransactionException($"Transaction {i + 1} ({rollback.transaction.GetType()}) failed rollback with error: {e.Message}", rollback.transaction, e);
+                        var transactionException = GetTransactionException(handler, e);
 
                         try
                         {
@@ -146,6 +159,15 @@ namespace UtilityExtensions.Core.Transactions
         public void Clear()
         {
             transactions.Clear();
+        }
+
+        private TransactionException GetTransactionException(TransactionHandler handler, Exception exception)
+        {
+            if (handler == null)
+                throw new ArgumentNullException("handler");
+
+            string state = handler.transaction?.state == Transaction.State.Pending ? "execute" : "rollback";
+            return new TransactionException($"Transaction {handler.Order} ({handler.transaction.GetType()}) failed to {state}, with error: {exception?.Message}", handler.transaction, exception);
         }
     }
 }

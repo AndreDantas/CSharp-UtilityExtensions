@@ -55,7 +55,7 @@ namespace UtilityExtensions_Test
         public void ExecuteSuccessTransaction()
         {
             var tran1 = new Add10Transaction(10);
-            TransactionManager.Init().AddTransaction(tran1).Execute();
+            TransactionManager.Add(tran1).Execute();
 
             Assert.IsTrue(tran1.value == 20);
         }
@@ -64,7 +64,7 @@ namespace UtilityExtensions_Test
         public void RollbackSuccessTransaction()
         {
             var tran1 = new Add10Transaction(10);
-            var tm = TransactionManager.Init().AddTransaction(tran1);
+            var tm = TransactionManager.Add(tran1);
             tm.Execute();
             tm.Rollback();
 
@@ -77,7 +77,7 @@ namespace UtilityExtensions_Test
             var tran1 = new StringUpperCaseTransaction(null);
             try
             {
-                TransactionManager.Init().AddTransaction(tran1).Execute();
+                TransactionManager.Add(tran1).Execute();
             }
             catch (TransactionException e)
             {

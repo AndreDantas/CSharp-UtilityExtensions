@@ -9,6 +9,28 @@ namespace UtilityExtensions.Core.Validations
         {
             public bool throwExceptionOnFail;
         }
+    }
+
+    public class Validation<T> : Validation
+    {
+        public class Parameter
+        {
+            public T value;
+            public string name;
+            private List<Result> results = new List<Result>();
+            public IReadOnlyCollection<Result> Results => results.AsReadOnly();
+
+            public Parameter(T value, string name)
+            {
+                this.value = value;
+                this.name = name;
+            }
+
+            public void AddResult(Result result)
+            {
+                this.results.Add(result);
+            }
+        }
 
         public struct Result
         {
@@ -23,39 +45,20 @@ namespace UtilityExtensions.Core.Validations
             public string paramName;
             public State state;
             public Exception exception;
-        }
-    }
-
-    public class Validation<T> : Validation
-    {
-        public class Parameter
-        {
-            public T Value { get; set; }
-            public string Name { get; set; }
-            private List<Result> results = new List<Result>();
-            public IReadOnlyCollection<Result> Results => results.AsReadOnly();
-
-            public Parameter(T value, string name)
-            {
-                Value = value;
-                Name = name;
-            }
-
-            public void AddResult(Result result)
-            {
-                this.results.Add(result);
-            }
+            public Method method;
         }
 
         public struct Method
         {
+            public string name;
             public Func<T, bool> execute;
             public string onFailError;
 
-            public Method(Func<T, bool> function, string onFailError)
+            public Method(Func<T, bool> function, string onFailError, string name = "")
             {
                 this.execute = function;
                 this.onFailError = onFailError;
+                this.name = name;
             }
         }
 
@@ -87,22 +90,26 @@ namespace UtilityExtensions.Core.Validations
         /// Adds a value to be validated
         /// </summary>
         /// <typeparam name="T"> </typeparam>
-        /// <param name="item"> </param>
         /// <param name="value"> </param>
         /// <param name="paramName"> </param>
         /// <returns> </returns>
         public static Validation<T> Add(T value, string paramName = "")
         {
             var v = new Validation<T>(new Settings { throwExceptionOnFail = true });
-            v.parameters.Add(new Parameter(value, paramName));
+
+            v.AddParameter(value, paramName);
 
             return v;
+        }
+
+        public void AddParameter(T value, string paramName = "")
+        {
+            parameters.Add(new Parameter(value, paramName));
         }
 
         /// <summary>
         /// Returns a list with the parameters that failed any validations
         /// </summary>
-        /// <param name="item"> </param>
         /// <returns> </returns>
         public List<Parameter> FailedParameters()
         {
@@ -137,12 +144,11 @@ namespace UtilityExtensions.Core.Validations
             for (int i = 0; i < parameters.Count; i++)
             {
                 Parameter param = parameters[i];
-                Result result = new Result { state = Result.State.Success };
-                result.paramName = param.Name;
+                Result result = new Result { method = method, paramName = param.name };
+
                 try
                 {
-                    if (!method.execute(param.Value))
-                        result.state = Result.State.Failed;
+                    result.state = method.execute(param.value) ? Result.State.Success : Result.State.Failed;
                 }
                 catch (Exception e)
                 {
@@ -151,7 +157,7 @@ namespace UtilityExtensions.Core.Validations
                 }
 
                 if (!result.IsSuccess && settings.throwExceptionOnFail)
-                    ThrowValidationException(method, result);
+                    ThrowValidationException(result);
 
                 param.AddResult(result);
                 results[i] = result;
@@ -164,11 +170,10 @@ namespace UtilityExtensions.Core.Validations
         /// Throws a ValidationException
         /// </summary>
         /// <typeparam name="T"> </typeparam>
-        /// <param name="message"> </param>
         /// <param name="result"> </param>
-        protected virtual void ThrowValidationException(Method method, Result result)
+        protected virtual void ThrowValidationException(Result result)
         {
-            throw new ValidationException($"Parameter {result.paramName} failed validation: {method.onFailError}", result.paramName, method.onFailError, result.exception);
+            throw new ValidationException($"Parameter {result.paramName} failed validation: {result.method.onFailError}", result.paramName, result.method.onFailError, result.exception);
         }
     }
 }

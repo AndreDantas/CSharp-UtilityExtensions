@@ -54,6 +54,16 @@ namespace UtilityExtensions.Core.Geometry
             return new Vector2(newX + centerPoint.x, newY + centerPoint.y);
         }
 
+        public static implicit operator Position(Vector2 v)
+        {
+            return new Position((int)v.x, (int)v.y);
+        }
+
+        public static implicit operator Vector2(Position p)
+        {
+            return new Vector2(p.x, p.y);
+        }
+
         public static Vector2 operator +(Vector2 v1, Vector2 v2) => new Vector2(v1.x + v2.x, v1.y + v2.y);
 
         public static Vector2 operator -(Vector2 v1, Vector2 v2) => new Vector2(v1.x - v2.x, v1.y - v2.y);

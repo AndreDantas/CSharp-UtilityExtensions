@@ -295,7 +295,7 @@ namespace UtilityExtensions.Extensions
             return str.Trim().ToLower().In("true", "1");
         }
 
-        public static string Hash_MD5(this string str)
+        public static string HashMD5(this string str)
         {
             using (MD5 md5Hash = MD5.Create())
             {
