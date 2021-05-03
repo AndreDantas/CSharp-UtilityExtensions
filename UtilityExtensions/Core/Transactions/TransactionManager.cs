@@ -71,7 +71,7 @@ namespace UtilityExtensions.Core.Transactions
         /// <param name="onRollbackTransaction"> </param>
         public void AddTransaction(Transaction transaction, Action<Transaction> onExecuteTransaction = null, Action<Transaction> onRollbackTransaction = null)
         {
-            transactions.Add(new TransactionHandler(transactions.Count +1 , transaction, onExecuteTransaction, onRollbackTransaction));
+            transactions.Add(new TransactionHandler(transactions.Count + 1, transaction, onExecuteTransaction, onRollbackTransaction));
         }
 
         /// <summary>

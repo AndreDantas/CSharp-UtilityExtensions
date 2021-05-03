@@ -16,10 +16,10 @@ namespace UtilityExtensions_Test
                 var string2 = "321";
                 var string3 = "";
 
-                Validation<string>.Add(string1, nameof(string1))
-                                  .Add(string2, nameof(string2))
-                                  .Add(string3, nameof(string3))
-                                  .NotEmpty();
+                ValidationManager<string>.Add(string1, nameof(string1))
+                                         .Add(string2, nameof(string2))
+                                         .Add(string3, nameof(string3))
+                                         .NotEmpty();
             }
             catch (Exception)
             {
@@ -38,12 +38,12 @@ namespace UtilityExtensions_Test
                 var string2 = "321";
                 var string3 = "12";
 
-                Validation<string>.UseSettings(new Validation.Settings { throwExceptionOnFail = true })
-                                  .Add(string1, nameof(string1))
-                                  .Add(string2, nameof(string2))
-                                  .Add(string3, nameof(string3))
-                                  .ShorterThan(4)
-                                  .LongerThan(2);
+                ValidationManager<string>.UseSettings(new ValidationManager.Settings { throwExceptionOnFail = true, validateImmediately = true })
+                                         .Add(string1, nameof(string1))
+                                         .Add(string2, nameof(string2))
+                                         .Add(string3, nameof(string3))
+                                         .ShorterThan(4)
+                                         .LongerThan(2);
             }
             catch (Exception)
             {
