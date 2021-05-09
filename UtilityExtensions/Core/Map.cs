@@ -55,10 +55,8 @@ namespace UtilityExtensions.Core
             StringBuilder sr = new StringBuilder();
             sr.Append("{");
             int keyCount = Keys.Count;
-            using (var cc = new CultureChanger())
+            using (var cc = new CultureChanger(CultureInfo.InvariantCulture))
             {
-                cc.ChangeCulture(CultureInfo.InvariantCulture);
-
                 foreach (var item in this)
                 {
                     keyCount--;

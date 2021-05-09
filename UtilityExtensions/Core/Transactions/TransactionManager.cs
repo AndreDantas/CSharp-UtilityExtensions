@@ -23,13 +23,13 @@ namespace UtilityExtensions.Core.Transactions
 
         public struct Settings
         {
-            public bool throwExceptionOnFail;
+            public bool throwExceptionOnError;
             public bool rollbackOnError;
             public Action<TransactionException> onExecuteError;
             public Action<TransactionException> onRollbackError;
         }
 
-        public static readonly Settings DEFAULT = new Settings { throwExceptionOnFail = true, rollbackOnError = true };
+        public static readonly Settings DEFAULT = new Settings { throwExceptionOnError = true, rollbackOnError = true };
 
         private List<TransactionHandler> transactions = new List<TransactionHandler>();
         public IReadOnlyCollection<TransactionHandler> Transactions => transactions.AsReadOnly();
@@ -108,7 +108,7 @@ namespace UtilityExtensions.Core.Transactions
                         }
                         catch { }
 
-                        if (settings.throwExceptionOnFail)
+                        if (settings.throwExceptionOnError)
                             throw transactionException;
                     }
                 }
@@ -145,7 +145,7 @@ namespace UtilityExtensions.Core.Transactions
                         }
                         catch { }
 
-                        if (settings.throwExceptionOnFail)
+                        if (settings.throwExceptionOnError)
                             throw transactionException;
                     }
                 }
@@ -164,7 +164,7 @@ namespace UtilityExtensions.Core.Transactions
         private TransactionException GetTransactionException(TransactionHandler handler, Exception exception)
         {
             if (handler == null)
-                throw new ArgumentNullException("handler");
+                throw new ArgumentNullException(nameof(handler));
 
             string state = handler.transaction?.state == Transaction.State.Pending ? "execute" : "rollback";
             return new TransactionException($"Transaction {handler.Order} ({handler.transaction.GetType()}) failed to {state}, with error: {exception?.Message}", handler.transaction, exception);

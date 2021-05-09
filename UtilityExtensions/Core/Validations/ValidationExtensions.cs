@@ -35,7 +35,7 @@ namespace UtilityExtensions.Core.Validations
         /// <param name="validationError"> </param>
         private static ValidationManager<T> Validate<T>(ValidationManager<T> item, Func<T, bool> validationFunc, string validationError, [CallerMemberName] string validationName = "")
         {
-            item.AddValidation(new Validation<T>(validationFunc, validationError, validationName));
+            item.AddValidation(validationFunc, validationError, validationName);
 
             return item;
         }

@@ -37,7 +37,7 @@ namespace UtilityExtensions.Extensions
         {
             if (destinationType == null)
             {
-                throw new ArgumentNullException("destinationType");
+                throw new ArgumentNullException(nameof(destinationType));
             }
 
             if (destinationType.IsGenericType &&

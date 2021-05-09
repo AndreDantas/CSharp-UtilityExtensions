@@ -52,5 +52,27 @@ namespace UtilityExtensions_Test
 
             Assert.Fail();
         }
+
+        [Test]
+        public void ValidateDecimal_InRange()
+        {
+            try
+            {
+                var decim1 = 30.23m;
+                var decim2 = -13m;
+                var decim3 = 2000m;
+
+                ValidationManager<decimal>.Add(decim1, nameof(decim1))
+                                         .Add(decim2, nameof(decim2))
+                                         .Add(decim3, nameof(decim3))
+                                         .InRange(-100, 100);
+            }
+            catch (Exception)
+            {
+                Assert.Pass();
+            }
+
+            Assert.Fail();
+        }
     }
 }

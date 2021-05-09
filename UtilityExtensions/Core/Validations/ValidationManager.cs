@@ -124,10 +124,14 @@ namespace UtilityExtensions.Core.Validations
         /// Adds a validation method
         /// </summary>
         /// <returns> </returns>
-        public void AddValidation(Validation<T> validation)
+        /// <exception cref="ArgumentNullException"> </exception>
+        /// <exception cref="ValidationException"> </exception>
+        public void AddValidation(Func<T, bool> validationFunc, string validationError, string validationName = "")
         {
-            if (validation.execute == null)
-                return;
+            if (validationFunc == null)
+                throw new ArgumentNullException(nameof(validationFunc));
+
+            var validation = new Validation<T>(validations.Count, validationFunc, validationError, validationName);
 
             validations.Add(validation);
 
@@ -155,10 +159,13 @@ namespace UtilityExtensions.Core.Validations
                 if (!result.IsSuccess && settings.throwExceptionOnFail)
                     ThrowValidationException(result);
 
-                param.AddResult(validations.Count, result);
+                param.AddResult(validation.Order, result);
             }
         }
 
+        /// <summary>
+        /// </summary>
+        /// <exception cref="ValidationException"> </exception>
         public void Validate()
         {
             foreach (var method in validations)
