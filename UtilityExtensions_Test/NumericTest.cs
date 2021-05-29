@@ -12,13 +12,13 @@ namespace UtilityExtensions_Test
         [Test]
         public void NumericTest_Constructor()
         {
-            Numeric n = 3.932;
+            Numeric n = 3.932f;
 
             Assert.IsTrue(n.Long == 3);
             Assert.IsTrue(n.Int == 3);
             Assert.IsTrue(n.Double.CloseTo(3.932));
             Assert.IsTrue(n.Float.CloseTo(3.932f));
-            Assert.IsTrue(n.Decimal == 3.932m);
+            Assert.IsTrue(n.WithPrecision(3).Decimal == 3.932m);
         }
 
         [Test]

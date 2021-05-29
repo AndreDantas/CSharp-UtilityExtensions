@@ -128,6 +128,43 @@ namespace UtilityExtensions.Extensions
             return (index >= 0 && index < list.Count);
         }
 
+        private static bool CheckListsItems(this IEnumerable list1, IEnumerable list2, Func<int, bool> evalFunction, IEqualityComparer<object> comparer = null)
+        {
+            if (evalFunction == null)
+                return false;
+
+            if (list1 is ICollection ilist1 && list2 is ICollection ilist2 && (ilist1.Count == 0 || ilist2.Count == 0 || ilist2.Count > ilist1.Count))
+                return false;
+
+            if (comparer == null)
+                comparer = EqualityComparer<object>.Default;
+
+            var itemCounts = new Dictionary<object, int>(comparer);
+            foreach (var s in list1)
+            {
+                if (itemCounts.ContainsKey(s))
+                {
+                    itemCounts[s]++;
+                }
+                else
+                {
+                    itemCounts.Add(s, 1);
+                }
+            }
+            foreach (var s in list2)
+            {
+                if (itemCounts.ContainsKey(s))
+                {
+                    itemCounts[s]--;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            return itemCounts.Values.All(evalFunction);
+        }
+
         /// <summary>
         /// Checks if the <paramref name="list2" /> items are contained in <paramref name="list1"
         /// />, ignoring order.
@@ -139,40 +176,11 @@ namespace UtilityExtensions.Extensions
         /// <returns> </returns>
         public static bool ContainsSequenceIgnoreOrder(this IEnumerable list1, IEnumerable list2, IEqualityComparer<object> comparer = null)
         {
-            if (list1 is ICollection ilist1 && list2 is ICollection ilist2 && (ilist1.Count == 0 || ilist2.Count == 0 || ilist2.Count > ilist1.Count))
-                return false;
-
-            if (comparer == null)
-                comparer = EqualityComparer<object>.Default;
-
-            var itemCounts = new Dictionary<object, int>(comparer);
-            foreach (var s in list1)
-            {
-                if (itemCounts.ContainsKey(s))
-                {
-                    itemCounts[s]++;
-                }
-                else
-                {
-                    itemCounts.Add(s, 1);
-                }
-            }
-            foreach (var s in list2)
-            {
-                if (itemCounts.ContainsKey(s))
-                {
-                    itemCounts[s]--;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            return itemCounts.Values.All(c => c >= 0);
+            return CheckListsItems(list1, list2, (c) => c >= 0, comparer);
         }
 
         /// <summary>
-        /// Checks if the items from both lists are the same, ignoring order /&gt;, ignoring order.
+        /// Checks if the items from both lists are the same, ignoring order.
         /// </summary>
         /// <typeparam name="T"> </typeparam>
         /// <param name="list1"> </param>
@@ -181,36 +189,7 @@ namespace UtilityExtensions.Extensions
         /// <returns> </returns>
         public static bool EqualsSequenceIgnoreOrder(this IEnumerable list1, IEnumerable list2, IEqualityComparer<object> comparer = null)
         {
-            if (list1 is ICollection ilist1 && list2 is ICollection ilist2 && (ilist1.Count == 0 || ilist2.Count == 0 || ilist2.Count > ilist1.Count))
-                return false;
-
-            if (comparer == null)
-                comparer = EqualityComparer<object>.Default;
-
-            var itemCounts = new Dictionary<object, int>(comparer);
-            foreach (var s in list1)
-            {
-                if (itemCounts.ContainsKey(s))
-                {
-                    itemCounts[s]++;
-                }
-                else
-                {
-                    itemCounts.Add(s, 1);
-                }
-            }
-            foreach (var s in list2)
-            {
-                if (itemCounts.ContainsKey(s))
-                {
-                    itemCounts[s]--;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            return itemCounts.Values.All(c => c == 0);
+            return CheckListsItems(list1, list2, (c) => c == 0, comparer);
         }
 
         #region String

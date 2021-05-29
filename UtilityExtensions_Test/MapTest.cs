@@ -14,6 +14,9 @@ namespace UtilityExtensions_Test
             public decimal decimalTest { get; set; } = 12.34m;
             public NestedClass nestedClassTest { get; set; } = new NestedClass();
             public List<decimal> listTest { get; set; } = new List<decimal> { 1.2m, 32 };
+
+            [MapIgnore]
+            public int ignore { get; set; }
         }
 
         private class NestedClass

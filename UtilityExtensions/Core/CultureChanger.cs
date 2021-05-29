@@ -17,7 +17,7 @@ namespace UtilityExtensions.Core
         /// </summary>
         public CultureChanger()
         {
-            OldCulture = Thread.CurrentThread.CurrentCulture;
+            OldCulture = Thread.CurrentThread.CurrentCulture.Clone() as CultureInfo;
         }
 
         /// <summary>
@@ -27,7 +27,7 @@ namespace UtilityExtensions.Core
         /// <exception cref="ArgumentNullException"> </exception>
         public CultureChanger(CultureInfo newCulture)
         {
-            OldCulture = Thread.CurrentThread.CurrentCulture;
+            OldCulture = Thread.CurrentThread.CurrentCulture.Clone() as CultureInfo;
             ChangeCulture(newCulture);
         }
 

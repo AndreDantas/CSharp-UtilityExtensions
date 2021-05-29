@@ -126,7 +126,7 @@ namespace UtilityExtensions.Extensions
         }
 
         /// <summary>
-        /// If the string is Empty or Null, returns the replacement string
+        /// If the string is empty, returns the replacement string
         /// </summary>
         /// <param name="s"> </param>
         /// <param name="replacement"> </param>
@@ -181,15 +181,18 @@ namespace UtilityExtensions.Extensions
         /// </summary>
         /// <param name="@default"> The default value. </param>
 
-        public static DateTime ToDateTime(this string str, DateTime @default = default, IFormatProvider format = null, DateTimeStyles style = DateTimeStyles.None)
+        public static DateTime ToDateTime(this string str, string format = "yyyy-MM-dd HH:mm:ss", DateTime @default = default, IFormatProvider culture = null, DateTimeStyles style = DateTimeStyles.None)
         {
-            if (format == null)
-                format = CultureInfo.InvariantCulture;
-            DateTime temp;
-            if (DateTime.TryParse(str, format, style, out temp))
-                return temp;
-            else
+            if (culture == null)
+                culture = CultureInfo.InvariantCulture;
+            try
+            {
+                return DateTime.ParseExact(str, format, culture, style);
+            }
+            catch
+            {
                 return @default;
+            }
         }
 
         /// <summary>
